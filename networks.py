@@ -3,6 +3,11 @@ File containing code for network structure and a way to read in network data fro
 
 """
 
+import networkx as nx
+import pandas as pd
+import pickle
+
+
 class Graph:
     """
     Graph object
@@ -25,24 +30,46 @@ class Graph:
 
 
 
+
+
 def readFile(filename):
-    graph = Graph()
     """
     Takes a network file and outputs a graph object of the network.
     """
+
+    G = nx.Graph()
+
 
     with open(filename) as f:
         lines = f.readlines()
 
     for line in lines:
         edge = line.split()
-        graph.addEdge(edge[0], edge[1])
+        G.add_nodes_from([edge[0], edge[1]])
+        G.add_edge(edge[0], edge[1])
 
-    print(len(graph.nodes), " nodes")
-    print(len(graph.edges), " edges")
+    print((G.number_of_nodes()), " nodes")
+    print(G.number_of_edges(), " edges")
 
-    return graph
+    return G
+
+def readAmazonData():
+
+    with open("networks/Amazon0302.txt") as f:
+        amazonGraph = nx.read_edgelist(f)
+    
+    pickle.dump(amazonGraph, open( "pickles/amazon.pickle", "wb" ))
 
 
-readFile("networks/web-Stanford.txt")
+def readGithubData():
 
+    with open("networks/musae_git_edges.csv") as f:
+        next(f, None)
+        githubGraph = nx.parse_edgelist(f, delimiter=',', nodetype=int)
+
+    pickle.dump(githubGraph, open( "pickles/github.pickle", "wb" ))
+
+
+if __name__ == "__main__":
+    readAmazonData()
+    readGithubData()
