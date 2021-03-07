@@ -5,7 +5,10 @@ import ndlib.models.epidemics as ep
 import ndlib.models.ModelConfig as mc
 import networkx as nx
 from ndlib.viz.mpl.DiffusionTrend import DiffusionTrend
+import ndlib.models.CompositeModel as gc
 import pickle
+
+from ndlib.models import DiffusionModel
 
 
 def loadAmazon():
@@ -76,8 +79,7 @@ def test(g):
 
     #g = nx.erdos_renyi_graph(1000, 0.1)
 
-    #model = ep.IndependentCascadesModel(g)
-    model = ep.IndependentCascadesModel(g)
+    model = gc.CompositeModel(g)
 
     # Model Configuration
     config = mc.Configuration()
