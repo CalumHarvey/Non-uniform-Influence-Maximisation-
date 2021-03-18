@@ -8,7 +8,8 @@ from ndlib.viz.mpl.DiffusionTrend import DiffusionTrend
 import ndlib.models.CompositeModel as gc
 import pickle
 
-from ndlib.models import DiffusionModel
+from independentCascade import IndependentCascadesModel
+from weightedCascade import WeightedCascadeModel
 
 
 def loadAmazon():
@@ -47,11 +48,11 @@ def linearThreshold(g, seedSet):
 
     # Visualization
     viz = DiffusionTrend(model, trends)
-    viz.plot("diffusion.pdf")
+    viz.plot("LT diffusion.pdf")
 
-def IndependentCascade(g, seedSet):
+def independentCascade(g, seedSet):
 
-    model = ep.IndependentCascadesModel(g)
+    model = IndependentCascadesModel(g)
 
     # Model Configuration
     config = mc.Configuration()
@@ -73,13 +74,39 @@ def IndependentCascade(g, seedSet):
 
     # Visualization
     viz = DiffusionTrend(model, trends)
-    viz.plot("diffusion.pdf")
+    viz.plot("IC diffusion.pdf")
+
+def weightedCascade(g, seedSet):
+
+    model = WeightedCascadeModel(g)
+
+    # Model Configuration
+    config = mc.Configuration()
+
+    #Set intial seed set
+    config.add_model_initial_configuration("Infected", seedSet)
+
+    # Setting the edge parameters
+    threshold = 0.1
+    #for e in g.edges():
+    #    config.add_edge_configuration("threshold", e, threshold)
+
+    model.set_initial_status(config)
+
+    # Simulation execution
+    iterations = model.iteration_bunch(200)
+
+    trends = model.build_trends(iterations)
+
+    # Visualization
+    viz = DiffusionTrend(model, trends)
+    viz.plot("WC diffusion.pdf")
 
 def test(g):
 
     #g = nx.erdos_renyi_graph(1000, 0.1)
 
-    model = gc.CompositeModel(g)
+    model = WeightedCascadeModel(g)
 
     # Model Configuration
     config = mc.Configuration()
@@ -87,13 +114,13 @@ def test(g):
 
     # Setting the edge parameters
     threshold = 0.1
-    for e in g.edges():
-        config.add_edge_configuration("threshold", e, threshold)
+    #for e in g.edges():
+    #    config.add_edge_configuration("threshold", e, threshold)
 
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(200)
+    iterations = model.iteration_bunch(30)
 
     trends = model.build_trends(iterations)
 
