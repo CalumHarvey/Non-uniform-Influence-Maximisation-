@@ -1,2 +1,3 @@
 from independentCascade import IndependentCascadesModel
 from weightedCascade import WeightedCascadeModel
+from heuristics import degreeDiscount, singleDegreeDiscount, degreeSeedset, randomSeedset
