@@ -70,6 +70,15 @@ def readGithubData():
     pickle.dump(githubGraph, open( "pickles/github.pickle", "wb" ))
 
 
+def readArxivData():
+    with open("networks/CA-CondMat.txt") as f:
+        ArxivGraph = nx.read_edgelist(f)
+    
+    pickle.dump(ArxivGraph, open( "pickles/arxiv.pickle", "wb" ))
+
+
+
 if __name__ == "__main__":
-    readAmazonData()
-    readGithubData()
+    # readAmazonData()
+    # readGithubData()
+    readArxivData()

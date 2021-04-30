@@ -1,82 +1,96 @@
 import random 
 import collections
 
-def randomSeedset(graph, n):
+def randomSeedset(graph, n, previousSS):
 
-    seedset = []
+    seedset = previousSS
 
-    for x in range(n):
+    while len(seedset) < n:
         node = random.randint(0, len(graph.nodes))
         while node in seedset:
             node = random.randint(0, len(graph.nodes))
-        seedset.append(node)
+        seedset.append(str(node))
 
     return seedset
 
 
-def degreeSeedset(graph, n):
+def degreeSeedset(graph, n, previousSS):
 
-    seedSet = []
+    seedSet = previousSS
     degreeDict = {}
 
     for node in graph.nodes:
-        degreeDict[len(graph.neighbors(node))] = node   
+        # print(len([n for n in graph.neighbors(node)]))
+        degreeDict[len([n for n in graph.neighbors(node)])] = node
 
-    od = collections.OrderedDict(sorted(degreeDict.items())) 
+    od = collections.OrderedDict(sorted(degreeDict.items(), reverse=True))
 
     for k, v in od.items():
 
         if(len(seedSet) == n):
             break
         
-        seedSet.append(v)
+        if(v not in seedSet):
+            print(len([n for n in graph.neighbors(v)]))
+            seedSet.append(v)
     
     return seedSet
 
-def singleDegreeDiscount(graph, n):
+
+def singleDegreeDiscount(graph, n, previousSS):
+    
     p = 0.1
-    seedSet  = []
+    seedSet = previousSS
+    degreeDict = {}
+
+    #Get degree of each node
+    for node in graph.nodes:
+        degreeDict[node] = len([n for n in graph.neighbors(node)])
+    
+    #Sort nodes by degree and add highest one
+    while len(seedSet) < n:
+        degreeDict = dict(sorted(degreeDict.items(), key=lambda item: item[1], reverse=True))
+
+        for k, v in degreeDict.items():
+
+            if(k not in seedSet):
+                print(len([n for n in graph.neighbors(k)]))
+                seedSet.append(k)
+
+                for neighbour in graph.neighbors(k):
+                    if neighbour not in seedSet:
+                        degreeDict[neighbour] -= 1
+                break
+
+    return seedSet
+
+
+def degreeDiscount(graph, n, previousSS):
+    p = 0.1
+    seedSet = previousSS
     degreeDict = {}
     neighboursSelected = {}
 
     for node in graph.nodes:
-        degreeDict[node] = len(graph.neighbors(node))  
+        degreeDict[node] = len([n for n in graph.neighbors(node)]) 
         neighboursSelected[node] = 0
     
-    for x in range(n):
-        degreeDict = sorted(degreeDict, key=degreeDict.get)
-        u, d  = next(iter( degreeDict.items()))
-        while u in seedSet:
-            u, d  = next(iter( degreeDict.items()))
-        seedSet.append(u)
+    while len(seedSet) < n:
+        degreeDict = dict(sorted(degreeDict.items(), key=lambda item: item[1], reverse=True))
 
-        for neighbour in graph.neighbors(u):
-            if neighbour not in seedSet:
-                degreeDict[neighbour] -= 1
-    return seedSet
+        for k, v in degreeDict.items():
 
+            if(k not in seedSet):
+                print(len([n for n in graph.neighbors(k)]))
+                seedSet.append(k)
 
-def degreeDiscount(graph, n):
-    p = 0.1
-    seedSet  = []
-    degreeDict = {}
-    neighboursSelected = {}
+                for neighbour in graph.neighbors(k):
+                    if neighbour not in seedSet:
+                        neighboursSelected[neighbour] += 1
+                        neighbourDegree = len([n for n in graph.neighbors(node)]) 
+                        degreeDict[neighbour] = neighbourDegree - (2*neighboursSelected[neighbour]) - ((neighbourDegree-neighboursSelected[neighbour])*(neighboursSelected[neighbour]*p))
 
-    for node in graph.nodes:
-        degreeDict[node] = len(graph.neighbors(node))  
-        neighboursSelected[node] = 0
-    
-    for x in range(n):
-        degreeDict = sorted(degreeDict, key=degreeDict.get)
-        u, d  = next(iter( degreeDict.items()))
-        while u in seedSet:
-            u, d  = next(iter( degreeDict.items()))
-        seedSet.append(u)
-
-        for neighbour in graph.neighbors(u):
-            if neighbour not in seedSet:
-                neighboursSelected[neighbour] += 1
-                degreeDict[neighbour] = len(graph.neighbors(neighbour)) - (2*neighboursSelected[neighbour]) - ((len(graph.neighbors(neighbour))-neighboursSelected[neighbour])*(neighboursSelected[neighbour]*p))
+                break
 
     return seedSet
 

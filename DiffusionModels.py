@@ -11,7 +11,6 @@ import pickle
 from independentCascade import IndependentCascadesModel
 from weightedCascade import WeightedCascadeModel
 
-
 def loadAmazon():
     with open(r"pickles/amazon.pickle", "rb") as input_file:
         amazonGraph = pickle.load(input_file)
@@ -24,8 +23,14 @@ def loadGithub():
     
     return githubGraph
 
+def loadArxiv():
+    with open(r"pickles/arxiv.pickle", "rb") as input_file:
+        arxivGraph = pickle.load(input_file)
+    
+    return arxivGraph
 
-def linearThreshold(g, seedSet):
+
+def linearThreshold(g, seedSet, iterations):
 
     model = ep.ThresholdModel(g)
 
@@ -35,22 +40,24 @@ def linearThreshold(g, seedSet):
     config.add_model_initial_configuration("Infected", seedSet)
 
     #Set threshold of each node
-    threshold = 0.25
+    threshold = 0.2
     for i in g.nodes():
         config.add_node_configuration("threshold", i, threshold)
 
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(200)
+    iterations = model.iteration_bunch(iterations)
 
     trends = model.build_trends(iterations)
 
     # Visualization
-    viz = DiffusionTrend(model, trends)
-    viz.plot("LT diffusion.pdf")
+    #viz = DiffusionTrend(model, trends)
+    #viz.plot("LT diffusion.pdf")
 
-def independentCascade(g, seedSet):
+    return trends[0]["trends"]["node_count"][1][-1]
+
+def independentCascade(g, seedSet, iterations):
 
     model = IndependentCascadesModel(g)
 
@@ -68,15 +75,17 @@ def independentCascade(g, seedSet):
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(200)
+    iterations = model.iteration_bunch(iterations)
 
     trends = model.build_trends(iterations)
 
     # Visualization
-    viz = DiffusionTrend(model, trends)
-    viz.plot("IC diffusion.pdf")
+    #viz = DiffusionTrend(model, trends)
+    #viz.plot("IC diffusion.pdf")
 
-def weightedCascade(g, seedSet):
+    return trends[0]["trends"]["node_count"][1][-1]
+
+def weightedCascade(g, seedSet, iterations):
 
     model = WeightedCascadeModel(g)
 
@@ -94,43 +103,44 @@ def weightedCascade(g, seedSet):
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(200)
+    iterations = model.iteration_bunch(iterations)
 
     trends = model.build_trends(iterations)
 
     # Visualization
-    viz = DiffusionTrend(model, trends)
-    viz.plot("WC diffusion.pdf")
+    #viz = DiffusionTrend(model, trends)
+    #viz.plot("WC diffusion.pdf")
 
-def test(g):
+    return trends[0]["trends"]["node_count"][1][-1]
 
-    #g = nx.erdos_renyi_graph(1000, 0.1)
 
-    model = WeightedCascadeModel(g)
+#config.add_model_parameter('fraction_infected', 0.1)
 
-    # Model Configuration
+def test(g, seedSet):
+
+    model = ep.ThresholdModel(g)
+
     config = mc.Configuration()
-    config.add_model_parameter('fraction_infected', 0.1)
 
-    # Setting the edge parameters
-    threshold = 0.1
-    #for e in g.edges():
-    #    config.add_edge_configuration("threshold", e, threshold)
+    #Set intial seed set
+    config.add_model_initial_configuration("Infected", seedSet)
+
+    #Set threshold of each node
+    threshold = 0.25
+    for i in g.nodes():
+        config.add_node_configuration("threshold", i, threshold)
 
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(30)
+    iterations = model.iteration_bunch(1)
 
     trends = model.build_trends(iterations)
 
     # Visualization
-    viz = DiffusionTrend(model, trends)
-    viz.plot("diffusion.pdf")
-
-graph = loadAmazon()
-
-test(graph)
-
+    #viz = DiffusionTrend(model, trends)
+    #viz.plot("LT diffusion.pdf")
+    print(trends)
+    return trends[0]["trends"]["node_count"][1][-1]
 
 
