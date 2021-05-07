@@ -19,6 +19,17 @@ import os
 
 
 def singleRun(networks, heuristic, model):
+    """
+    Input:
+    networks: networkX graph object
+    heuristic: function used to pick seedSet nodes
+    model: network diffusion model object
+
+    Runs a test for a single set of parameters defined in the inputs 
+
+    Return: array of number of infections for each seedSet size
+
+    """
 
     infections = []
 
@@ -47,6 +58,17 @@ def singleRun(networks, heuristic, model):
     
 
 def plotInfection(infections, network, heuristic, model):
+    """
+    Inputs:
+    infections: array of number of infections for each seedSet size
+    network: name of network used to gain infections data
+    heuristic: name of heuristic used to gain infections data
+    model: name of model used to gain infections data
+
+    Plots infections on a graph, saves graph as a png in a folder related to network, heuristic and model name
+    """
+
+
     yAxis = []
     for x in range(len(infections)):
         yAxis.append(x+1)
@@ -62,6 +84,17 @@ def plotInfection(infections, network, heuristic, model):
     plt.clf()
 
 def plotAllHeuristics(data, fileName, heuristics):
+    """
+    Input:
+    data: 2d array of infection data from each heuristic
+    fileName: name of file where graph is saved
+    heuristics: list of all heuristics, used for legend creation
+
+
+    Plots results for all heuristics for a specific network and model, then saves graph as png
+    """
+
+
     yAxis = []
     for x in range(len(data[0])):
         yAxis.append(x+1)
@@ -82,39 +115,49 @@ def plotAllHeuristics(data, fileName, heuristics):
 
 def main():
 
+
+    # Empty array for results 
     results = []
+
+    # Arrays for names of networks, heuristics and models
     networkNames = ["Amazon", "Github", "Arxiv"]
     heuristicNames= ["Random", "Degree", "SingleDiscount", "DegreeDiscount"]
     diffusionNames = ["LinearThreshold", "IndependentCascade", "WeightedCascade"]
+
+    # Arrays for functions relating to networks, heuristics and models
     networks = np.array([loadAmazon, loadGithub, loadArxiv])
     heuristics = [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
     diffusionModels = [linearThreshold, independentCascade, weightedCascade]
 
+    #For each network...
     for x in range(len(networks)):
+        #Write name of network to file
         with open("results.txt", "a") as myfile:
-                    myfile.write("Network: " + networkNames[x] + "\n")
+            myfile.write("Network: " + networkNames[x] + "\n")
+        #For each model...
         for y in range(len(diffusionModels)):
+            #Write name of model to file
             with open("results.txt", "a") as myfile:
                     myfile.write("\tDiffusion Model: " + diffusionNames[y] + "\n")
             results = []
+            # For each heuristic...
             for z in range(len(heuristics)):
 
+                # Run single test with set parameters
                 infections = singleRun(networks[x], heuristics[z], diffusionModels[y])
-                # infections = singleRun(loadGithub, degreeSeedset, linearThreshold)
-                print(infections)
 
+                # Plot infections for single heuristic
                 plotInfection(infections, networkNames[x], heuristicNames[z], diffusionNames[y])
 
+                # Append results from single run to array
                 results.append(infections)
-                #output = "Heuristic: " + heuristicNames[z] + "\n" + infections + "\n"
 
+                # Write single run results to file
                 with open("results.txt", "a") as myfile:
                     myfile.write("\t\tHeuristic: " + heuristicNames[z] + "\n\t\t" + str(infections) + "\n")
             
+            # Plot all heuristics for single network and model
             plotAllHeuristics(results, networkNames[x] + diffusionNames[y], heuristicNames)
-            
-    
-    print(results)
 
 if __name__ == "__main__":
     main()

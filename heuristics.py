@@ -2,6 +2,17 @@ import random
 import collections
 
 def randomSeedset(graph, n, previousSS):
+    """
+    Input:
+    graph: NetworkX graph object
+    n: seedSet size
+    previousSS: previous seedSet array
+
+    randomly select nodes into the seedSet 
+
+    Return: new seedSet
+
+    """
 
     seedset = previousSS
 
@@ -15,12 +26,22 @@ def randomSeedset(graph, n, previousSS):
 
 
 def degreeSeedset(graph, n, previousSS):
+    """
+    Input:
+    graph: NetworkX graph object
+    n: seedSet size
+    previousSS: previous seedSet array
+
+    select nodes for the seedSet with the highest degree
+
+    Return: new seedSet
+
+    """
 
     seedSet = previousSS
     degreeDict = {}
 
     for node in graph.nodes:
-        # print(len([n for n in graph.neighbors(node)]))
         degreeDict[len([n for n in graph.neighbors(node)])] = node
 
     od = collections.OrderedDict(sorted(degreeDict.items(), reverse=True))
@@ -38,6 +59,17 @@ def degreeSeedset(graph, n, previousSS):
 
 
 def singleDegreeDiscount(graph, n, previousSS):
+    """
+    Input:
+    graph: NetworkX graph object
+    n: seedSet size
+    previousSS: previous seedSet array
+
+    node selection using single degree discount heuristic, first proposed by chen et al
+
+    Return: new seedSet
+
+    """
     
     p = 0.1
     seedSet = previousSS
@@ -66,6 +98,17 @@ def singleDegreeDiscount(graph, n, previousSS):
 
 
 def degreeDiscount(graph, n, previousSS):
+    """
+    Input:
+    graph: NetworkX graph object
+    n: seedSet size
+    previousSS: previous seedSet array
+
+    node selection using degree discount heuristic, first proposed by chen et al
+
+    Return: new seedSet
+    """
+
     p = 0.1
     seedSet = previousSS
     degreeDict = {}

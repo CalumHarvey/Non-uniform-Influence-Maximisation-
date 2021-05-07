@@ -54,6 +54,11 @@ def readFile(filename):
     return G
 
 def readAmazonData():
+    """
+    Read amazon network from text file into networkX object
+    Save network as pickle file
+
+    """
 
     with open("networks/Amazon0302.txt") as f:
         amazonGraph = nx.read_edgelist(f)
@@ -62,6 +67,11 @@ def readAmazonData():
 
 
 def readGithubData():
+    """
+    Read github network from text file into networkX object
+    Save network as pickle file
+
+    """
 
     with open("networks/musae_git_edges.csv") as f:
         next(f, None)
@@ -71,6 +81,11 @@ def readGithubData():
 
 
 def readArxivData():
+    """
+    Read amazon network from text file into networkX object
+    Save network as pickle file
+
+    """
     with open("networks/CA-CondMat.txt") as f:
         ArxivGraph = nx.read_edgelist(f)
     

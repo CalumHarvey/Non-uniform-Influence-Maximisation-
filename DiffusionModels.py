@@ -12,18 +12,39 @@ from independentCascade import IndependentCascadesModel
 from weightedCascade import WeightedCascadeModel
 
 def loadAmazon():
+    """
+    Load amazon network from pickle file
+
+    Return: 
+    amazonGraph: networkX object of network
+
+    """
     with open(r"pickles/amazon.pickle", "rb") as input_file:
         amazonGraph = pickle.load(input_file)
     
     return amazonGraph
 
 def loadGithub():
+    """
+    Load github network from pickle file
+
+    Return: 
+    githubGraph: networkX object of network
+
+    """
     with open(r"pickles/github.pickle", "rb") as input_file:
         githubGraph = pickle.load(input_file)
     
     return githubGraph
 
 def loadArxiv():
+    """
+    Load arxiv network from pickle file
+
+    Return: 
+    arxivGraph: networkX object of network
+
+    """
     with open(r"pickles/arxiv.pickle", "rb") as input_file:
         arxivGraph = pickle.load(input_file)
     
@@ -31,6 +52,17 @@ def loadArxiv():
 
 
 def linearThreshold(g, seedSet, iterations):
+    """
+    Inputs:
+    g: NetworkX graph object
+    seedSet: list of nodes in the seedSet
+    iterations: number of iterations to be performed 
+
+    Performs linearThreshold model simulations with a specific seedSet using NDlib library functions
+
+    Return:
+    number of nodes activate after all iterations have been completed
+    """
 
     model = ep.ThresholdModel(g)
 
@@ -58,6 +90,17 @@ def linearThreshold(g, seedSet, iterations):
     return trends[0]["trends"]["node_count"][1][-1]
 
 def independentCascade(g, seedSet, iterations):
+    """
+    Inputs:
+    g: NetworkX graph object
+    seedSet: list of nodes in the seedSet
+    iterations: number of iterations to be performed 
+
+    Performs independent Cascade model simulations with a specific seedSet using NDlib library functions
+
+    Return:
+    number of nodes activate after all iterations have been completed
+    """
 
     model = IndependentCascadesModel(g)
 
@@ -86,6 +129,17 @@ def independentCascade(g, seedSet, iterations):
     return trends[0]["trends"]["node_count"][1][-1]
 
 def weightedCascade(g, seedSet, iterations):
+    """
+    Inputs:
+    g: NetworkX graph object
+    seedSet: list of nodes in the seedSet
+    iterations: number of iterations to be performed 
+
+    Performs Weighted Cascade model simulations with a specific seedSet using NDlib library functions
+
+    Return:
+    number of nodes activate after all iterations have been completed
+    """
 
     model = WeightedCascadeModel(g)
 
