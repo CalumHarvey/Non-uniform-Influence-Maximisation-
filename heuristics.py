@@ -1,7 +1,7 @@
 import random 
 import collections
 
-def randomSeedset(graph, n, previousSS):
+def randomSeedset(graph, n):
     """
     Input:
     graph: NetworkX graph object
@@ -13,19 +13,18 @@ def randomSeedset(graph, n, previousSS):
     Return: new seedSet
 
     """
+    seedset = []
 
-    seedset = previousSS
-
-    while len(seedset) < n:
-        node = random.randint(0, len(graph.nodes))
+    for x in range(n):
+        node = random.choice(list(graph.nodes))
         while node in seedset:
-            node = random.randint(0, len(graph.nodes))
+            node = random.choice(list(graph.nodes))
         seedset.append(str(node))
 
     return seedset
 
 
-def degreeSeedset(graph, n, previousSS):
+def degreeSeedset(graph, n):
     """
     Input:
     graph: NetworkX graph object
@@ -38,27 +37,31 @@ def degreeSeedset(graph, n, previousSS):
 
     """
 
-    seedSet = previousSS
+    seedSet = []
     degreeDict = {}
-
+    print(len(graph.nodes))
     for node in graph.nodes:
-        degreeDict[len([n for n in graph.neighbors(node)])] = node
+        #degreeDict[len([n for n in graph.neighbors(node)])] = node
+        degreeDict[node] = len([n for n in graph.neighbors(node)])
+    print(len(degreeDict))
 
-    od = collections.OrderedDict(sorted(degreeDict.items(), reverse=True))
+    od = collections.OrderedDict(sorted(degreeDict.items(), reverse=True, key=lambda item: item[1]))
 
     for k, v in od.items():
 
         if(len(seedSet) == n):
+            print("seedset size: ", len(seedSet))
             break
         
         if(v not in seedSet):
-            print(len([n for n in graph.neighbors(v)]))
-            seedSet.append(v)
+            #print(len([n for n in graph.neighbors(v)]))
+            seedSet.append(str(k))
+    print("seedset size2: ", len(seedSet))
     
     return seedSet
 
 
-def singleDegreeDiscount(graph, n, previousSS):
+def singleDegreeDiscount(graph, n):
     """
     Input:
     graph: NetworkX graph object
@@ -72,7 +75,7 @@ def singleDegreeDiscount(graph, n, previousSS):
     """
     
     p = 0.1
-    seedSet = previousSS
+    seedSet = []
     degreeDict = {}
 
     #Get degree of each node
@@ -80,24 +83,26 @@ def singleDegreeDiscount(graph, n, previousSS):
         degreeDict[node] = len([n for n in graph.neighbors(node)])
     
     #Sort nodes by degree and add highest one
-    while len(seedSet) < n:
-        degreeDict = dict(sorted(degreeDict.items(), key=lambda item: item[1], reverse=True))
+    # while len(seedSet) < n:
+    degreeDict = dict(sorted(degreeDict.items(), key=lambda item: item[1], reverse=True))
 
-        for k, v in degreeDict.items():
+    for k, v in degreeDict.items():
 
-            if(k not in seedSet):
-                print(len([n for n in graph.neighbors(k)]))
-                seedSet.append(k)
+        if(len(seedSet) ==  n):
+            break
 
-                for neighbour in graph.neighbors(k):
-                    if neighbour not in seedSet:
-                        degreeDict[neighbour] -= 1
-                break
+        if(k not in seedSet):
+            #print(len([n for n in graph.neighbors(k)]))
+            seedSet.append(str(k))
+
+            for neighbour in graph.neighbors(k):
+                if neighbour not in seedSet:
+                    degreeDict[neighbour] -= 1
 
     return seedSet
 
 
-def degreeDiscount(graph, n, previousSS):
+def degreeDiscount(graph, n):
     """
     Input:
     graph: NetworkX graph object
@@ -110,7 +115,7 @@ def degreeDiscount(graph, n, previousSS):
     """
 
     p = 0.1
-    seedSet = previousSS
+    seedSet = []
     degreeDict = {}
     neighboursSelected = {}
 
@@ -118,22 +123,24 @@ def degreeDiscount(graph, n, previousSS):
         degreeDict[node] = len([n for n in graph.neighbors(node)]) 
         neighboursSelected[node] = 0
     
-    while len(seedSet) < n:
-        degreeDict = dict(sorted(degreeDict.items(), key=lambda item: item[1], reverse=True))
+    # while len(seedSet) < n:
+    degreeDict = dict(sorted(degreeDict.items(), key=lambda item: item[1], reverse=True))
 
-        for k, v in degreeDict.items():
+    for k, v in degreeDict.items():
 
-            if(k not in seedSet):
-                print(len([n for n in graph.neighbors(k)]))
-                seedSet.append(k)
+        if(len(seedSet) == n):
+            break
 
-                for neighbour in graph.neighbors(k):
-                    if neighbour not in seedSet:
-                        neighboursSelected[neighbour] += 1
-                        neighbourDegree = len([n for n in graph.neighbors(node)]) 
-                        degreeDict[neighbour] = neighbourDegree - (2*neighboursSelected[neighbour]) - ((neighbourDegree-neighboursSelected[neighbour])*(neighboursSelected[neighbour]*p))
+        if(k not in seedSet):
+            #print(len([n for n in graph.neighbors(k)]))
+            seedSet.append(str(k))
 
-                break
+            for neighbour in graph.neighbors(k):
+                if neighbour not in seedSet:
+                    neighboursSelected[neighbour] += 1
+                    neighbourDegree = len([n for n in graph.neighbors(node)]) 
+                    degreeDict[neighbour] = neighbourDegree - (2*neighboursSelected[neighbour]) - ((neighbourDegree-neighboursSelected[neighbour])*(neighboursSelected[neighbour]*p))
+
 
     return seedSet
 

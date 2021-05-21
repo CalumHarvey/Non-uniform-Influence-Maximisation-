@@ -18,7 +18,7 @@ import os
 """
 
 
-def singleRun(networks, heuristic, model):
+def singleRun(networks, heuristic, model, networkName):
     """
     Input:
     networks: networkX graph object
@@ -38,16 +38,18 @@ def singleRun(networks, heuristic, model):
     
     #heuristic = input("Choose Heuristic: \n 1: Random \n 2: Degree \n 3: Single Degree \n 4: Degree Discount\n ")
 
-    seedSetSize = 50
+    seedSetSize = 100
+    repetitions = 20
     seedSet = []
 
-    for x in range(seedSetSize):
-        seedSet = heuristic(network, x+1, seedSet)
-        print(seedSet)
+    for x in range(10, 60, 10):
+        seedSet = np.array(heuristic(network, x))
+        if networkName == "Github":
+            seedSet = seedSet.astype("int")
         outputs = []
-        for y in range(25):
+        for y in range(repetitions):
             print(y)
-            infectedNodes = model(network, seedSet, 10)
+            infectedNodes = model(network, seedSet)
             outputs.append(infectedNodes)
 
             print(infectedNodes)
@@ -76,7 +78,7 @@ def plotInfection(infections, network, heuristic, model):
     plt.plot(yAxis, infections, label=heuristic)
     plt.legend()
 
-    directory = "graphs/" + network + "/" + model
+    directory = "graphs/uniform/" + network + "/" + model
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -104,7 +106,7 @@ def plotAllHeuristics(data, fileName, heuristics):
     
     plt.legend()
 
-    directory = "graphs/allHeuristics"
+    directory = "graphs/uniform/allHeuristics"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -115,19 +117,20 @@ def plotAllHeuristics(data, fileName, heuristics):
 
 def main():
 
-
     # Empty array for results 
     results = []
 
     # Arrays for names of networks, heuristics and models
-    networkNames = ["Amazon", "Github", "Arxiv"]
-    heuristicNames= ["Random", "Degree", "SingleDiscount", "DegreeDiscount"]
-    diffusionNames = ["LinearThreshold", "IndependentCascade", "WeightedCascade"]
+    # ["Amazon", "Github", "Arxiv"]
+    networkNames = ["Github", "Arxiv"]
+    heuristicNames= ["Random", "Degree", "SingleDiscount", "DegreeDiscount"] # ["Random", "Degree", "SingleDiscount", "DegreeDiscount"]
+    diffusionNames = ["LinearThreshold", "IndependentCascade", "WeightedCascade"]  # ["LinearThreshold", "IndependentCascade", "WeightedCascade"] 
 
     # Arrays for functions relating to networks, heuristics and models
-    networks = np.array([loadAmazon, loadGithub, loadArxiv])
-    heuristics = [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
-    diffusionModels = [linearThreshold, independentCascade, weightedCascade]
+    # [loadAmazon, loadGithub, loadArxiv]
+    networks = np.array([loadGithub, loadArxiv])
+    heuristics = [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount] #  [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
+    diffusionModels = [linearThreshold, independentCascade, weightedCascade] # [linearThreshold, independentCascade, weightedCascade]
 
     #For each network...
     for x in range(len(networks)):
@@ -144,7 +147,7 @@ def main():
             for z in range(len(heuristics)):
 
                 # Run single test with set parameters
-                infections = singleRun(networks[x], heuristics[z], diffusionModels[y])
+                infections = singleRun(networks[x], heuristics[z], diffusionModels[y], networkNames[x])
 
                 # Plot infections for single heuristic
                 plotInfection(infections, networkNames[x], heuristicNames[z], diffusionNames[y])

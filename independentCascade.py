@@ -56,14 +56,16 @@ class IndependentCascadesModel(DiffusionModel.DiffusionModel):
                         "node_count": node_count.copy(), "status_delta": status_delta.copy()}
 
         for u in self.graph.nodes:
+
             if self.status[u] != 1:
                 continue
-
+                
+            
             neighbors = list(self.graph.neighbors(u))  # neighbors and successors (in DiGraph) produce the same result
 
             # Standard threshold
             if len(neighbors) > 0:
-                threshold = self.threshold
+                threshold = 1.0/len(neighbors)
 
                 for v in neighbors:
                     if actual_status[v] == 0:
@@ -80,7 +82,7 @@ class IndependentCascadesModel(DiffusionModel.DiffusionModel):
                         if flip <= threshold:
                             actual_status[v] = 1
 
-            #actual_status[u] = 2
+            actual_status[u] = 2
 
         delta, node_count, status_delta = self.status_delta(actual_status)
         self.status = actual_status

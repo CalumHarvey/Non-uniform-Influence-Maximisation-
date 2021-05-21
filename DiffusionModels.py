@@ -48,10 +48,12 @@ def loadArxiv():
     with open(r"pickles/arxiv.pickle", "rb") as input_file:
         arxivGraph = pickle.load(input_file)
     
-    return arxivGraph
+    undirected = arxivGraph.to_undirected()
+    
+    return undirected
 
 
-def linearThreshold(g, seedSet, iterations):
+def linearThreshold(g, seedSet):
     """
     Inputs:
     g: NetworkX graph object
@@ -63,7 +65,7 @@ def linearThreshold(g, seedSet, iterations):
     Return:
     number of nodes activate after all iterations have been completed
     """
-
+    nodesActive = []
     model = ep.ThresholdModel(g)
 
     config = mc.Configuration()
@@ -72,24 +74,28 @@ def linearThreshold(g, seedSet, iterations):
     config.add_model_initial_configuration("Infected", seedSet)
 
     #Set threshold of each node
-    threshold = 0.2
+    threshold = 0.4
     for i in g.nodes():
         config.add_node_configuration("threshold", i, threshold)
 
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(iterations)
-
-    trends = model.build_trends(iterations)
+    previousCount = 0
+    while True:
+        iterations = model.iteration()
+        if iterations["node_count"][1] == previousCount:
+            break
+        nodesActive.append(iterations["node_count"][1])
+        previousCount = iterations["node_count"][1]
 
     # Visualization
     #viz = DiffusionTrend(model, trends)
     #viz.plot("LT diffusion.pdf")
 
-    return trends[0]["trends"]["node_count"][1][-1]
+    return nodesActive[-1]
 
-def independentCascade(g, seedSet, iterations):
+def independentCascade(g, seedSet):
     """
     Inputs:
     g: NetworkX graph object
@@ -101,7 +107,7 @@ def independentCascade(g, seedSet, iterations):
     Return:
     number of nodes activate after all iterations have been completed
     """
-
+    nodesActive = []
     model = IndependentCascadesModel(g)
 
     # Model Configuration
@@ -111,24 +117,29 @@ def independentCascade(g, seedSet, iterations):
     config.add_model_initial_configuration("Infected", seedSet)
 
     # Setting the edge parameters
-    threshold = 0.1
+    threshold = 0.01
     for e in g.edges():
         config.add_edge_configuration("threshold", e, threshold)
 
     model.set_initial_status(config)
 
-    # Simulation execution
-    iterations = model.iteration_bunch(iterations)
 
-    trends = model.build_trends(iterations)
+    # Simulation execution
+    while True:
+        iterations = model.iteration()
+        print(iterations["node_count"])
+        input()
+        if iterations["node_count"][1] == 0:
+            break
+        nodesActive.append(int(iterations["node_count"][2] + iterations["node_count"][1]))
 
     # Visualization
     #viz = DiffusionTrend(model, trends)
     #viz.plot("IC diffusion.pdf")
 
-    return trends[0]["trends"]["node_count"][1][-1]
+    return nodesActive[-1]
 
-def weightedCascade(g, seedSet, iterations):
+def weightedCascade(g, seedSet):
     """
     Inputs:
     g: NetworkX graph object
@@ -140,7 +151,7 @@ def weightedCascade(g, seedSet, iterations):
     Return:
     number of nodes activate after all iterations have been completed
     """
-
+    nodesActive = []
     model = WeightedCascadeModel(g)
 
     # Model Configuration
@@ -157,44 +168,65 @@ def weightedCascade(g, seedSet, iterations):
     model.set_initial_status(config)
 
     # Simulation execution
-    iterations = model.iteration_bunch(iterations)
-
-    trends = model.build_trends(iterations)
+    while True:
+        iterations = model.iteration()
+        if iterations["node_count"][1] == 0:
+            break
+        nodesActive.append(iterations["node_count"][2])
 
     # Visualization
     #viz = DiffusionTrend(model, trends)
     #viz.plot("WC diffusion.pdf")
 
-    return trends[0]["trends"]["node_count"][1][-1]
+    return nodesActive[-1]
 
 
 #config.add_model_parameter('fraction_infected', 0.1)
 
 def test(g, seedSet):
+    """
+    Inputs:
+    g: NetworkX graph object
+    seedSet: list of nodes in the seedSet
+    iterations: number of iterations to be performed 
 
-    model = ep.ThresholdModel(g)
+    Performs independent Cascade model simulations with a specific seedSet using NDlib library functions
 
+    Return:
+    number of nodes activate after all iterations have been completed
+    """
+    nodesActive = []
+    model = IndependentCascadesModel(g)
+
+    # Model Configuration
     config = mc.Configuration()
 
     #Set intial seed set
     config.add_model_initial_configuration("Infected", seedSet)
+    # config.add_model_parameter('fraction_infected', 0.01)
 
-    #Set threshold of each node
-    threshold = 0.25
-    for i in g.nodes():
-        config.add_node_configuration("threshold", i, threshold)
+    # Setting the edge parameters
+    threshold = 0.9
+    for e in g.edges():
+        config.add_edge_configuration("threshold", e, threshold)
 
     model.set_initial_status(config)
 
-    # Simulation execution
-    iterations = model.iteration_bunch(1)
 
-    trends = model.build_trends(iterations)
+
+    # Simulation execution
+    iterations = model.iteration_bunch(10)
+
 
     # Visualization
     #viz = DiffusionTrend(model, trends)
-    #viz.plot("LT diffusion.pdf")
-    print(trends)
-    return trends[0]["trends"]["node_count"][1][-1]
+    #viz.plot("IC diffusion.pdf")
 
+    return iterations
 
+# g = loadGithub()
+# s = [17522, 18369, 21618, 15051, 28102, 9587, 15191, 30153, 30648]
+# test(g, s)
+
+# ['17522', '18369', '21618', '15051', '28102', '29587', '15191', '30153', '30648', '28887', '25722', '28154', '35949', '16372', '11948', '8274', '34875', '13115', '12311', '14854', '25137', '4602', '4080', '20521', '25649', '22201', '4816', '25740', '10949', '27649', '32775', '12893', '23711', '18965', '11215', '3026', '33276', '21952', '29906', '25480', '19402', '15423', '5276', '2729', '30660', '19976', '4621', '23820', '21818', '7390', '26403', '32820', '15391', '34722', '11629', '17000', '36906', '10377', '21322', '9921', '6110', '13788', '13438', '4200', '32369', '12721', '18981', '571', '23972', '22887', '9266', '28768', '4881', '35225', '35257', '20640', '22555', '26832', '19844', '28067', '21901', '33594', '29048', '24583', '17056', '13503', '34355', '1508', '12444', '13733', '24679', '10179', '8209', '5580', '1806', '31715', '972', 
+# '12071', '17836', '29125']

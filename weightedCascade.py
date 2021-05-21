@@ -67,20 +67,12 @@ class WeightedCascadeModel(DiffusionModel.DiffusionModel):
 
                 for v in neighbors:
                     if actual_status[v] == 0:
-                        key = (u, v)
-
-                        # Individual specified thresholds
-                        if 'threshold' in self.params['edges']:
-                            if key in self.params['edges']['threshold']:
-                                threshold = self.params['edges']['threshold'][key]
-                            elif (v, u) in self.params['edges']['threshold'] and not self.graph.directed:
-                                threshold = self.params['edges']['threshold'][(v, u)]
-
+                        
                         flip = np.random.random_sample()
                         if flip <= threshold:
                             actual_status[v] = 1
 
-            #actual_status[u] = 2
+            actual_status[u] = 2
 
         delta, node_count, status_delta = self.status_delta(actual_status)
         self.status = actual_status
