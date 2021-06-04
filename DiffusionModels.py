@@ -65,7 +65,7 @@ def linearThreshold(g, seedSet):
     Return:
     number of nodes activate after all iterations have been completed
     """
-    nodesActive = []
+    nodesActive = [0]
     model = ep.ThresholdModel(g)
 
     config = mc.Configuration()
@@ -74,7 +74,7 @@ def linearThreshold(g, seedSet):
     config.add_model_initial_configuration("Infected", seedSet)
 
     #Set threshold of each node
-    threshold = 0.4
+    threshold = 0.6
     for i in g.nodes():
         config.add_node_configuration("threshold", i, threshold)
 
@@ -84,6 +84,7 @@ def linearThreshold(g, seedSet):
     previousCount = 0
     while True:
         iterations = model.iteration()
+        # print(iterations["node_count"])
         if iterations["node_count"][1] == previousCount:
             break
         nodesActive.append(iterations["node_count"][1])
@@ -107,7 +108,7 @@ def independentCascade(g, seedSet):
     Return:
     number of nodes activate after all iterations have been completed
     """
-    nodesActive = []
+    nodesActive = [0]
     model = IndependentCascadesModel(g)
 
     # Model Configuration
@@ -127,8 +128,6 @@ def independentCascade(g, seedSet):
     # Simulation execution
     while True:
         iterations = model.iteration()
-        print(iterations["node_count"])
-        input()
         if iterations["node_count"][1] == 0:
             break
         nodesActive.append(int(iterations["node_count"][2] + iterations["node_count"][1]))
@@ -151,7 +150,7 @@ def weightedCascade(g, seedSet):
     Return:
     number of nodes activate after all iterations have been completed
     """
-    nodesActive = []
+    nodesActive = [0]
     model = WeightedCascadeModel(g)
 
     # Model Configuration
@@ -168,17 +167,17 @@ def weightedCascade(g, seedSet):
     model.set_initial_status(config)
 
     # Simulation execution
+
     while True:
         iterations = model.iteration()
+        # print(iterations["node_count"])
         if iterations["node_count"][1] == 0:
             break
-        nodesActive.append(iterations["node_count"][2])
+        nodesActive.append(int(iterations["node_count"][2] + iterations["node_count"][1]))
 
-    # Visualization
-    #viz = DiffusionTrend(model, trends)
-    #viz.plot("WC diffusion.pdf")
 
     return nodesActive[-1]
+    # return iterations[-1]["node_count"][2]
 
 
 #config.add_model_parameter('fraction_infected', 0.1)
@@ -196,33 +195,39 @@ def test(g, seedSet):
     number of nodes activate after all iterations have been completed
     """
     nodesActive = []
-    model = IndependentCascadesModel(g)
+    model = WeightedCascadeModel(g)
 
     # Model Configuration
     config = mc.Configuration()
 
     #Set intial seed set
     config.add_model_initial_configuration("Infected", seedSet)
-    # config.add_model_parameter('fraction_infected', 0.01)
 
     # Setting the edge parameters
-    threshold = 0.9
-    for e in g.edges():
-        config.add_edge_configuration("threshold", e, threshold)
+    threshold = 0.1
+    #for e in g.edges():
+    #    config.add_edge_configuration("threshold", e, threshold)
 
     model.set_initial_status(config)
 
-
-
     # Simulation execution
+    """
+    while True:
+        iterations = model.iteration()
+        # print(iterations["node_count"])
+        if iterations["node_count"][1] == 0:
+            break
+        nodesActive.append(int(iterations["node_count"][2] + iterations["node_count"][1]))
+    """
     iterations = model.iteration_bunch(10)
-
-
+    print(iterations[-1]["node_count"][2])
+    input()
     # Visualization
     #viz = DiffusionTrend(model, trends)
-    #viz.plot("IC diffusion.pdf")
+    #viz.plot("WC diffusion.pdf")
+    # input()
+    return nodesActive[-1]
 
-    return iterations
 
 # g = loadGithub()
 # s = [17522, 18369, 21618, 15051, 28102, 9587, 15191, 30153, 30648]

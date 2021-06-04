@@ -62,8 +62,9 @@ def readAmazonData():
 
     with open("networks/Amazon0302.txt") as f:
         amazonGraph = nx.read_edgelist(f)
+    undirected = amazonGraph.to_undirected()
     
-    pickle.dump(amazonGraph, open( "pickles/amazon.pickle", "wb" ))
+    pickle.dump(undirected, open( "pickles/amazon.pickle", "wb" ))
 
 
 def readGithubData():
@@ -76,8 +77,9 @@ def readGithubData():
     with open("networks/musae_git_edges.csv") as f:
         next(f, None)
         githubGraph = nx.parse_edgelist(f, delimiter=',', nodetype=int)
+    undirected = githubGraph.to_undirected()
 
-    pickle.dump(githubGraph, open( "pickles/github.pickle", "wb" ))
+    pickle.dump(undirected, open( "pickles/github.pickle", "wb" ))
 
 
 def readArxivData():
@@ -86,10 +88,11 @@ def readArxivData():
     Save network as pickle file
 
     """
-    with open("networks/CA-CondMat.txt") as f:
+    with open("networks/Cit-HepPh.txt") as f:
         ArxivGraph = nx.read_edgelist(f)
+    undirected = ArxivGraph.to_undirected()
     
-    pickle.dump(ArxivGraph, open( "pickles/arxiv.pickle", "wb" ))
+    pickle.dump(undirected, open("pickles/arxiv.pickle", "wb" ))
 
 
 

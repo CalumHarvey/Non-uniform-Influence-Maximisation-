@@ -1,24 +1,17 @@
-from heuristics import degreeDiscount, singleDegreeDiscount, degreeSeedset, randomSeedset
+from heuristics import degreeDiscountUniform, singleDegreeDiscountUniform, degreeSeedsetUniform, randomSeedsetUniform
+from heuristics import degreeDiscountNonUniform, singleDegreeDiscountNonUniform, degreeSeedsetNonUniform, randomSeedsetNonUniform
 from DiffusionModels import loadAmazon, loadGithub, loadArxiv, linearThreshold, weightedCascade, independentCascade
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-"""
-1. get a network
-
-2. pass network to heuristic with n specified, seedset is returned
-
-3. monte carlo simulation 50 times
-
-    3.1. seedSet is passed to a diffusion model
-
-    3.2. number of infected nodes is output by the diffusion model
-
-5. do this for each seedset size up to x
-"""
+import matplotlib.pyplot as plt
+from collections import Counter
+import seaborn as sns
+import pickle
 
 
-def singleRun(networks, heuristic, model, networkName):
+
+def singleRun(networks, heuristic, model, networkName, average):
     """
     Input:
     networks: networkX graph object
@@ -33,27 +26,31 @@ def singleRun(networks, heuristic, model, networkName):
 
     infections = []
 
-    #network = input("Choose network to use \n 1: amazon \n 2: Github \n")
     network = networks()
-    
-    #heuristic = input("Choose Heuristic: \n 1: Random \n 2: Degree \n 3: Single Degree \n 4: Degree Discount\n ")
 
-    seedSetSize = 100
-    repetitions = 20
+    """
+    with open("costs/" + networkName.lower() + "/pagerank.p", "rb") as fp:
+            data = pickle.load(fp)
+    """
+    seedSetSize = 50 # uniform costs
+    budget = 1000 # non-uniform costs
+    repetitions = 50
     seedSet = []
-
+    # 50-500
     for x in range(10, 60, 10):
-        seedSet = np.array(heuristic(network, x))
+        seedSet = np.array(heuristic(network, x)) # seedset for uniform costs
+        # seedSet = np.array(heuristic(network, x*average, data))
         if networkName == "Github":
             seedSet = seedSet.astype("int")
+        else:
+            seedSet = seedSet.astype("str")
         outputs = []
         for y in range(repetitions):
             print(y)
             infectedNodes = model(network, seedSet)
             outputs.append(infectedNodes)
 
-            print(infectedNodes)
-        
+        print(np.mean(np.array(outputs)))
         infections.append(int(np.mean(np.array(outputs))))
 
     return infections
@@ -78,7 +75,7 @@ def plotInfection(infections, network, heuristic, model):
     plt.plot(yAxis, infections, label=heuristic)
     plt.legend()
 
-    directory = "graphs/uniform/" + network + "/" + model
+    directory = "graphs/tests/" + network + "/" + model
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -106,7 +103,7 @@ def plotAllHeuristics(data, fileName, heuristics):
     
     plt.legend()
 
-    directory = "graphs/uniform/allHeuristics"
+    directory = "graphs/tests/allHeuristics"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -120,34 +117,43 @@ def main():
     # Empty array for results 
     results = []
 
+    resultsFile = "results.txt"
+
     # Arrays for names of networks, heuristics and models
     # ["Amazon", "Github", "Arxiv"]
-    networkNames = ["Github", "Arxiv"]
+    networkNames = ["Arxiv"]
     heuristicNames= ["Random", "Degree", "SingleDiscount", "DegreeDiscount"] # ["Random", "Degree", "SingleDiscount", "DegreeDiscount"]
-    diffusionNames = ["LinearThreshold", "IndependentCascade", "WeightedCascade"]  # ["LinearThreshold", "IndependentCascade", "WeightedCascade"] 
+    diffusionNames = ["WeightedCascade"]     # ["LinearThreshold", "IndependentCascade", "WeightedCascade"] 
 
     # Arrays for functions relating to networks, heuristics and models
     # [loadAmazon, loadGithub, loadArxiv]
-    networks = np.array([loadGithub, loadArxiv])
-    heuristics = [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount] #  [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
-    diffusionModels = [linearThreshold, independentCascade, weightedCascade] # [linearThreshold, independentCascade, weightedCascade]
+    networks = np.array([loadArxiv])
+
+    averages = [0.0000033, 0.000013, 0.000022]
+
+    # uniform cost heuristics 
+    heuristics = [randomSeedsetUniform, degreeSeedsetUniform, singleDegreeDiscountUniform, degreeDiscountUniform] #  [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
+    
+    # Non uniform cost heuristics
+    # heuristics = [randomSeedsetNonUniform, degreeSeedsetNonUniform, singleDegreeDiscountNonUniform, degreeDiscountNonUniform]
+    diffusionModels = [weightedCascade] # [linearThreshold, independentCascade, weightedCascade] 
 
     #For each network...
     for x in range(len(networks)):
         #Write name of network to file
-        with open("results.txt", "a") as myfile:
+        with open(resultsFile, "a") as myfile:
             myfile.write("Network: " + networkNames[x] + "\n")
         #For each model...
         for y in range(len(diffusionModels)):
             #Write name of model to file
-            with open("results.txt", "a") as myfile:
+            with open(resultsFile, "a") as myfile:
                     myfile.write("\tDiffusion Model: " + diffusionNames[y] + "\n")
             results = []
             # For each heuristic...
             for z in range(len(heuristics)):
 
                 # Run single test with set parameters
-                infections = singleRun(networks[x], heuristics[z], diffusionModels[y], networkNames[x])
+                infections = singleRun(networks[x], heuristics[z], diffusionModels[y], networkNames[x], averages[x])
 
                 # Plot infections for single heuristic
                 plotInfection(infections, networkNames[x], heuristicNames[z], diffusionNames[y])
@@ -156,11 +162,13 @@ def main():
                 results.append(infections)
 
                 # Write single run results to file
-                with open("results.txt", "a") as myfile:
+                with open(resultsFile, "a") as myfile:
                     myfile.write("\t\tHeuristic: " + heuristicNames[z] + "\n\t\t" + str(infections) + "\n")
             
             # Plot all heuristics for single network and model
             plotAllHeuristics(results, networkNames[x] + diffusionNames[y], heuristicNames)
 
+
 if __name__ == "__main__":
     main()
+

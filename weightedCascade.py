@@ -1,6 +1,7 @@
 from ndlib.models import DiffusionModel
 import future.utils
 import numpy as np
+import random
 
 class WeightedCascadeModel(DiffusionModel.DiffusionModel):
     """
@@ -35,8 +36,6 @@ class WeightedCascadeModel(DiffusionModel.DiffusionModel):
 
         self.name = "Independent Cascades"
 
-        self.threshold = 0.1
-
     def iteration(self, node_status=True):
         """
         Execute a single model iteration
@@ -61,16 +60,20 @@ class WeightedCascadeModel(DiffusionModel.DiffusionModel):
 
             neighbors = list(self.graph.neighbors(u))  # neighbors and successors (in DiGraph) produce the same result
 
-            # Standard threshold
             if len(neighbors) > 0:
-                threshold = 1.0/len(neighbors)
+                threshold = 1/len(neighbors)
+
 
                 for v in neighbors:
                     if actual_status[v] == 0:
                         
-                        flip = np.random.random_sample()
+                        # flip = np.random.random_sample()
+                        flip = random.uniform(0.0, 1.0)
+                        # print("flip:", flip)
                         if flip <= threshold:
                             actual_status[v] = 1
+                            # print("flipped")
+                            # input()
 
             actual_status[u] = 2
 

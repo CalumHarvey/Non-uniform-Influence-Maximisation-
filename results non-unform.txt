@@ -1,0 +1,262 @@
+RANDOM:
+
+Network: Amazon
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[55, 102, 165, 205, 234, 316, 355, 396, 453, 494]
+		Heuristic: Degree
+		[76, 147, 236, 344, 440, 526, 606, 670, 770, 858]
+		Heuristic: SingleDiscount
+		[76, 146, 234, 334, 431, 509, 591, 658, 761, 847]
+		Heuristic: DegreeDiscount
+		[76, 146, 234, 327, 415, 485, 550, 646, 729, 814]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[59, 104, 178, 208, 284, 342, 375, 412, 490, 540]
+		Heuristic: Degree
+		[145, 243, 346, 445, 531, 601, 676, 749, 837, 901]
+		Heuristic: SingleDiscount
+		[143, 246, 347, 446, 523, 603, 686, 750, 833, 921]
+		Heuristic: DegreeDiscount
+		[146, 243, 345, 447, 528, 607, 674, 766, 838, 909]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[233, 455, 759, 960, 1147, 1504, 1651, 1931, 2181, 2263]
+		Heuristic: Degree
+		[235, 470, 729, 1024, 1185, 1444, 1627, 1844, 2090, 2265]
+		Heuristic: SingleDiscount
+		[248, 493, 738, 1002, 1183, 1410, 1640, 1794, 2101, 2339]
+		Heuristic: DegreeDiscount
+		[264, 487, 751, 986, 1235, 1450, 1669, 1842, 2123, 2282]
+Network: Github
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[56, 119, 172, 215, 273, 335, 343, 449, 481, 515]
+		Heuristic: Degree
+		[3167, 4079, 4896, 5766, 6570, 7250, 7906, 8514, 9151, 11346]
+		Heuristic: SingleDiscount
+		[3185, 4138, 4966, 5827, 6587, 7391, 8086, 8740, 9424, 10076]
+		Heuristic: DegreeDiscount
+		[3106, 4155, 5042, 5870, 6738, 7446, 8055, 8703, 9371, 10066]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[733, 757, 1025, 1100, 1142, 1247, 1346, 1391, 1465, 1542]
+		Heuristic: Degree
+		[1210, 1387, 1494, 1599, 1723, 1797, 1894, 1967, 1989, 2116]
+		Heuristic: SingleDiscount
+		[1226, 1394, 1514, 1615, 1722, 1845, 1875, 1988, 2061, 2120]
+		Heuristic: DegreeDiscount
+		[1222, 1372, 1508, 1639, 1717, 1831, 1925, 2014, 2093, 2155]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[317, 633, 811, 951, 1168, 1299, 1468, 1666, 1691, 1912]
+		Heuristic: Degree
+		[323, 473, 602, 762, 883, 998, 1076, 1198, 1348, 1403]
+		Heuristic: SingleDiscount
+		[288, 455, 609, 741, 867, 1011, 1088, 1218, 1312, 1409]
+		Heuristic: DegreeDiscount
+		[301, 453, 635, 775, 896, 1021, 1156, 1315, 1397, 1580]
+Network: Arxiv
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[55, 111, 142, 222, 284, 297, 348, 417, 466, 499]
+		Heuristic: Degree
+		[112, 200, 280, 338, 413, 478, 534, 605, 678, 748]
+		Heuristic: SingleDiscount
+		[116, 201, 279, 348, 415, 480, 551, 614, 694, 766]
+		Heuristic: DegreeDiscount
+		[117, 197, 282, 355, 426, 506, 557, 633, 707, 780]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[96, 176, 294, 345, 447, 508, 578, 655, 717, 876]
+		Heuristic: Degree
+		[460, 709, 895, 1046, 1231, 1314, 1438, 1546, 1604, 1722]
+		Heuristic: SingleDiscount
+		[462, 701, 922, 1061, 1198, 1328, 1453, 1548, 1661, 1773]
+		Heuristic: DegreeDiscount
+		[478, 701, 918, 1086, 1205, 1361, 1453, 1558, 1664, 1765]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[391, 801, 1190, 1504, 1893, 2064, 2409, 2632, 2872, 3260]
+		Heuristic: Degree
+		[463, 735, 1070, 1289, 1511, 1702, 1845, 1926, 2099, 2240]
+		Heuristic: SingleDiscount
+		[453, 788, 1051, 1261, 1486, 1691, 1821, 2016, 2126, 2322]
+		Heuristic: DegreeDiscount
+		[422, 763, 1014, 1371, 1549, 1780, 1846, 2009, 2220, 2356]
+
+DEGREE:
+
+Network: Amazon
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[46, 98, 129, 175, 230, 270, 300, 359, 427, 474]
+		Heuristic: Degree
+		[2, 2, 3, 4, 10, 7, 7, 13, 16, 18]
+		Heuristic: SingleDiscount
+		[2, 2, 3, 4, 10, 7, 7, 13, 16, 18]
+		Heuristic: DegreeDiscount
+		[2, 2, 3, 4, 10, 7, 7, 13, 16, 18]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[44, 96, 132, 178, 240, 260, 328, 362, 405, 477]
+		Heuristic: Degree
+		[5, 8, 12, 17, 22, 26, 29, 34, 38, 44]
+		Heuristic: SingleDiscount
+		[5, 9, 13, 17, 20, 26, 31, 33, 37, 41]
+		Heuristic: DegreeDiscount
+		[4, 7, 14, 18, 22, 27, 30, 32, 37, 42]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[223, 398, 617, 970, 999, 1256, 1388, 1809, 1842, 2083]
+		Heuristic: Degree
+		[8, 9, 15, 20, 24, 35, 37, 37, 46, 50]
+		Heuristic: SingleDiscount
+		[12, 11, 18, 24, 28, 27, 40, 33, 50, 62]
+		Heuristic: DegreeDiscount
+		[11, 9, 15, 20, 29, 32, 32, 41, 54, 51]
+
+Network: Github
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[28, 55, 76, 27, 112, 121, 153, 223, 202, 178]
+		Heuristic: Degree
+		[3, 5, 15, 7, 11, 35, 52, 46, 51, 72]
+		Heuristic: SingleDiscount
+		[3, 5, 15, 7, 11, 35, 52, 46, 51, 72]
+		Heuristic: DegreeDiscount
+		[3, 5, 15, 7, 11, 35, 52, 46, 51, 72]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[365, 508, 662, 709, 861, 747, 1062, 907, 1025, 1100]
+		Heuristic: Degree
+		[242, 164, 332, 544, 431, 430, 354, 500, 647, 722]
+		Heuristic: SingleDiscount
+		[163, 177, 533, 477, 608, 395, 495, 516, 703, 627]
+		Heuristic: DegreeDiscount
+		[406, 83, 373, 518, 612, 732, 621, 481, 452, 588]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[238, 211, 494, 389, 716, 607, 855, 945, 1001, 1042]
+		Heuristic: Degree
+		[13, 20, 25, 12, 15, 22, 20, 12, 11, 9]
+		Heuristic: SingleDiscount
+		[23, 16, 14, 13, 26, 25, 13, 9, 8, 26]
+		Heuristic: DegreeDiscount
+		[24, 15, 17, 20, 14, 16, 23, 21, 17, 15]
+
+Network: Arxiv
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[45, 47, 94, 123, 181, 233, 225, 256, 293, 368]
+		Heuristic: Degree
+		[4, 7, 14, 18, 23, 25, 34, 36, 37, 39]
+		Heuristic: SingleDiscount
+		[4, 7, 14, 18, 23, 25, 34, 36, 37, 39]
+		Heuristic: DegreeDiscount
+		[4, 7, 14, 18, 23, 27, 27, 36, 38, 39]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[60, 119, 136, 213, 245, 314, 344, 417, 436, 488]
+		Heuristic: Degree
+		[26, 45, 54, 82, 80, 116, 125, 157, 165, 196]
+		Heuristic: SingleDiscount
+		[20, 54, 64, 77, 86, 116, 119, 144, 173, 183]
+		Heuristic: DegreeDiscount
+		[20, 45, 64, 66, 84, 108, 126, 141, 184, 194]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[275, 508, 827, 874, 1390, 1430, 1706, 1706, 2030, 2008]
+		Heuristic: Degree
+		[27, 34, 36, 77, 70, 96, 104, 116, 155, 128]
+		Heuristic: SingleDiscount
+		[17, 24, 40, 61, 59, 68, 80, 110, 133, 124]
+		Heuristic: DegreeDiscount
+		[16, 24, 45, 64, 65, 75, 87, 124, 143, 120]
+
+PAGE RANK:
+
+Network: Amazon
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[41, 97, 122, 180, 220, 267, 321, 362, 389, 434]
+		Heuristic: Degree
+		[2, 3, 4, 6, 7, 13, 17, 20, 22, 24]
+		Heuristic: SingleDiscount
+		[2, 3, 4, 6, 7, 13, 17, 19, 21, 24]
+		Heuristic: DegreeDiscount
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[46, 93, 140, 188, 233, 286, 333, 363, 430, 457]
+		Heuristic: Degree
+		[7, 11, 16, 24, 30, 37, 40, 45, 53, 62]
+		Heuristic: SingleDiscount
+		[8, 11, 16, 24, 28, 35, 42, 45, 51, 61]
+		Heuristic: DegreeDiscount
+		[6, 4, 5, 5, 5, 6, 5, 5, 5, 5]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[221, 373, 696, 851, 1052, 1211, 1390, 1668, 1887, 2185]
+		Heuristic: Degree
+		[10, 13, 26, 29, 36, 47, 54, 57, 62, 97]
+		Heuristic: SingleDiscount
+		[8, 15, 22, 41, 43, 41, 59, 64, 75, 69]
+		Heuristic: DegreeDiscount
+		[3, 3, 3, 8, 5, 9, 6, 7, 5, 3]
+Network: Github
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[30, 34, 52, 139, 178, 193, 214, 230, 244, 330]
+		Heuristic: Degree
+		[2, 4, 19, 23, 37, 49, 51, 38, 40, 42]
+		Heuristic: SingleDiscount
+		[2, 4, 19, 23, 37, 49, 51, 38, 40, 42]
+		Heuristic: DegreeDiscount
+		[1, 3, 18, 21, 34, 48, 48, 36, 36, 36]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[241, 684, 710, 975, 980, 1003, 1124, 1104, 1148, 1184]
+		Heuristic: Degree
+		[302, 543, 577, 588, 641, 603, 721, 737, 696, 789]
+		Heuristic: SingleDiscount
+		[385, 526, 437, 352, 603, 601, 666, 671, 814, 799]
+		Heuristic: DegreeDiscount
+		[239, 389, 476, 573, 352, 512, 556, 654, 631, 668]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[270, 327, 585, 481, 880, 720, 880, 851, 1309, 1300]
+		Heuristic: Degree
+		[12, 20, 16, 17, 21, 26, 23, 28, 17, 35]
+		Heuristic: SingleDiscount
+		[20, 14, 13, 29, 32, 16, 21, 32, 25, 28]
+		Heuristic: DegreeDiscount
+		[15, 7, 5, 10, 13, 8, 4, 8, 13, 6]
+Network: Arxiv
+	Diffusion Model: LinearThreshold
+		Heuristic: Random
+		[47, 91, 120, 154, 211, 243, 286, 329, 344, 411]
+		Heuristic: Degree
+		[5, 18, 19, 26, 36, 39, 44, 51, 55, 63]
+		Heuristic: SingleDiscount
+		[5, 18, 19, 26, 36, 39, 44, 51, 55, 63]
+		Heuristic: DegreeDiscount
+		[3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+	Diffusion Model: IndependentCascade
+		Heuristic: Random
+		[73, 134, 199, 248, 286, 362, 470, 514, 555, 626]
+		Heuristic: Degree
+		[34, 61, 92, 125, 154, 189, 227, 241, 291, 316]
+		Heuristic: SingleDiscount
+		[39, 77, 97, 123, 169, 199, 223, 254, 280, 288]
+		Heuristic: DegreeDiscount
+		[25, 22, 31, 25, 23, 21, 22, 26, 21, 23]
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[256, 695, 894, 1244, 1483, 1709, 1845, 2030, 2322, 2609]
+		Heuristic: Degree
+		[32, 40, 56, 69, 145, 131, 207, 185, 239, 248]
+		Heuristic: SingleDiscount
+		[33, 48, 81, 77, 115, 149, 192, 167, 203, 251]
+		Heuristic: DegreeDiscount
+		[7, 9, 9, 18, 10, 4, 22, 10, 10, 14]

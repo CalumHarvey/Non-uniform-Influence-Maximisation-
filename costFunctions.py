@@ -86,14 +86,14 @@ def averageCalculations():
         
         dataArray = list(data.values())
 
-        print(network, " : Mean: ", '{:.10f}'.format(np.mean(dataArray)))
+        print(network, " : Mean: ", '{:.10f}'.format(np.median(dataArray)))
 
         costs.append(np.array(dataArray))
     
     overallArray = np.concatenate(costs)
     #print(np.concatenate(costs))
     
-    print("overall mean: ", '{:.10f}'.format(np.mean(overallArray)))
+    print("overall mean: ", '{:.10f}'.format(np.median(overallArray)))
     
 
 
@@ -101,5 +101,5 @@ def averageCalculations():
 
 if __name__ == "__main__":
 
+    # writeCosts(loadArxiv(), "arxiv")
     averageCalculations()
-
