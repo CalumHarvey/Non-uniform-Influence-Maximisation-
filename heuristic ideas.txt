@@ -1,0 +1,22 @@
+G: graph
+b: budget
+costs: cost of each node, with costsv being the cost of node v
+
+DegreeDiscountIC(G, b, costs):
+
+initialize S = ∅
+initialize C = 0
+for each vertex v do
+    compute its degree dv
+    ddv = dv
+    initialize tv to 0
+end for
+for i = 1 to k do
+    select u = arg maxv{ddv | v ∈ V \ S}
+    S = S ∪ {u}
+    for each neighbor v of u and v ∈ V \ S do
+        tv = tv + 1
+        ddv = dv − 2tv − (dv − tv)tvp
+    end for
+end for
+output S
