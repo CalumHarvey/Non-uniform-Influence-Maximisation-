@@ -2,21 +2,85 @@ G: graph
 b: budget
 costs: cost of each node, with costsv being the cost of node v
 
-DegreeDiscountIC(G, b, costs):
+DegreeDiscountIC(G, b, C):
 
 initialize S = ∅
-initialize C = 0
+initialize TC = 0
+initalize R = ∅
 for each vertex v do
     compute its degree dv
     ddv = dv
     initialize tv to 0
 end for
-for i = 1 to k do
-    select u = arg maxv{ddv | v ∈ V \ S}
-    S = S ∪ {u}
-    for each neighbor v of u and v ∈ V \ S do
-        tv = tv + 1
-        ddv = dv − 2tv − (dv − tv)tvp
-    end for
+while TC != b and v ∈ V \ S ∪ R not none
+    select u = arg maxv{ddv | v ∈ V \ S ∪ R}
+    if Cu + TC > b do
+        R = R ∪ {u}
+    else do
+        S = S ∪ {u}
+        TC = TC + Cu
+        for each neighbor v of u and v ∈ V \ S do
+            tv = tv + 1
+            ddv = dv − 2tv − (dv − tv)tvp
+        end for
+    end if
+end while
+output S
+
+******************************************************************
+
+G: graph
+b: budget
+costs: cost of each node, with costsv being the cost of node v
+
+DegreeDiscountWithCosts(G, b, C):
+
+initialize S = ∅
+initialize TC = 0
+initalize R = ∅
+for each vertex v do
+    compute its degree dv
+    ddv = dv
+    initialize tv to 0
+    dcv = ddv/Cv
 end for
+while TC != b and v ∈ V \ S ∪ R not none
+    select u = arg maxv{dcv | v ∈ V \ S ∪ R}
+    if Cu + TC > b do
+        R = R ∪ {u}
+    else do
+        S = S ∪ {u}
+        TC = TC + Cu
+        for each neighbor v of u and v ∈ V \ S do
+            tv = tv + 1
+            ddv = dv − 2tv − (dv − tv)tvp
+            dcv = ddv/Cv
+        end for
+    end if
+end while
+output S
+
+******************************************************************
+
+
+G: graph
+b: budget
+costs: cost of each node, with costsv being the cost of node v
+
+AverageCost(G, b, C):
+
+initialize S = ∅
+initialize TC = 0
+
+compute median of C: CM
+
+while TC + CM <= b
+    select u = arg minv{|CM - Cv| | v ∈ V \ S}
+    if Cu + TC <= b do
+        S = S ∪ {u}
+    end if
+    TC = TC + Cu 
+    compute median of C: CM    
+end while
+
 output S
