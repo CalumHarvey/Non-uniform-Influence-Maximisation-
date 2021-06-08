@@ -34,10 +34,10 @@ def singleRun(networks, heuristic, model, networkName, average):
     """
     seedSetSize = 50 # uniform costs
     budget = 1000 # non-uniform costs
-    repetitions = 50
+    repetitions = 20
     seedSet = []
     # 50-500
-    for x in range(10, 60, 10):
+    for x in range(50, 550, 50):
         seedSet = np.array(heuristic(network, x)) # seedset for uniform costs
         # seedSet = np.array(heuristic(network, x*average, data))
         if networkName == "Github":

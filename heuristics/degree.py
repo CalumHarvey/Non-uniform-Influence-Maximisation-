@@ -64,11 +64,11 @@ if __name__ == '__main__':
     with open("costs/" + "github" + "/degree.p", "rb") as fp:
         data = pickle.load(fp)
     
-    with open(r"pickles/github.pickle", "rb") as input_file:
-        githubGraph = pickle.load(input_file)
+    with open(r"pickles/arxiv.pickle", "rb") as input_file:
+        arxivGraph = pickle.load(input_file)
     
-    undirected = githubGraph.to_undirected()
+    undirected = arxivGraph.to_undirected()
 
-    S = degreeSeedsetNonUniform(undirected, 3000, data)
+    S = degreeSeedsetUniform(undirected, 50)
 
     print(S)

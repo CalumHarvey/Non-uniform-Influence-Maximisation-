@@ -14,7 +14,7 @@ def randomSeedsetUniform(G, n):
 
     """
 
-    seedset = random.sample(G.nodes(), n)
+    seedset = random.sample(list(G.nodes), n)
 
     return seedset
 
@@ -58,6 +58,6 @@ if __name__ == '__main__':
     
     undirected = arxivGraph.to_undirected()
 
-    S = randomSeedsetNonUniform(undirected, 200, data)
+    S = randomSeedsetUniform(undirected, 50)
 
     print(S)

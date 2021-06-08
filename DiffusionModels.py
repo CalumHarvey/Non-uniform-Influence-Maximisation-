@@ -8,8 +8,9 @@ from ndlib.viz.mpl.DiffusionTrend import DiffusionTrend
 import ndlib.models.CompositeModel as gc
 import pickle
 
-from independentCascade import IndependentCascadesModel
+# from independentCascade import IndependentCascadesModel
 from weightedCascade import WeightedCascadeModel
+from newWeightedCascade import NewWeightedCascadeModel
 
 def loadAmazon():
     """
@@ -22,7 +23,9 @@ def loadAmazon():
     with open(r"pickles/amazon.pickle", "rb") as input_file:
         amazonGraph = pickle.load(input_file)
     
-    return amazonGraph
+    undirected = amazonGraph.to_undirected()
+    
+    return undirected
 
 def loadGithub():
     """
@@ -35,7 +38,9 @@ def loadGithub():
     with open(r"pickles/github.pickle", "rb") as input_file:
         githubGraph = pickle.load(input_file)
     
-    return githubGraph
+    undirected = githubGraph.to_undirected()
+    
+    return undirected
 
 def loadArxiv():
     """
@@ -109,7 +114,7 @@ def independentCascade(g, seedSet):
     number of nodes activate after all iterations have been completed
     """
     nodesActive = [0]
-    model = IndependentCascadesModel(g)
+    model = ep.IndependentCascadesModel(g)
 
     # Model Configuration
     config = mc.Configuration()
@@ -150,34 +155,23 @@ def weightedCascade(g, seedSet):
     Return:
     number of nodes activate after all iterations have been completed
     """
-    nodesActive = [0]
-    model = WeightedCascadeModel(g)
 
-    # Model Configuration
-    config = mc.Configuration()
-
-    #Set intial seed set
-    config.add_model_initial_configuration("Infected", seedSet)
-
-    # Setting the edge parameters
-    threshold = 0.1
-    #for e in g.edges():
-    #    config.add_edge_configuration("threshold", e, threshold)
-
-    model.set_initial_status(config)
-
-    # Simulation execution
+    nodesActive = []
+    model = WeightedCascadeModel(g.to_directed(), seedSet)
 
     while True:
         iterations = model.iteration()
         # print(iterations["node_count"])
-        if iterations["node_count"][1] == 0:
+        if iterations["infected"] == 0:
             break
-        nodesActive.append(int(iterations["node_count"][2] + iterations["node_count"][1]))
+        nodesActive.append(int(iterations["infected"] + iterations["removed"]))
 
-
+    # Visualization
+    #viz = DiffusionTrend(model, trends)
+    #viz.plot("WC diffusion.pdf")
+    # input()
     return nodesActive[-1]
-    # return iterations[-1]["node_count"][2]
+
 
 
 #config.add_model_parameter('fraction_infected', 0.1)
@@ -195,43 +189,32 @@ def test(g, seedSet):
     number of nodes activate after all iterations have been completed
     """
     nodesActive = []
-    model = WeightedCascadeModel(g)
 
-    # Model Configuration
-    config = mc.Configuration()
 
-    #Set intial seed set
-    config.add_model_initial_configuration("Infected", seedSet)
 
-    # Setting the edge parameters
-    threshold = 0.1
-    #for e in g.edges():
-    #    config.add_edge_configuration("threshold", e, threshold)
 
-    model.set_initial_status(config)
+    model = WeightedCascadeModel(g, seedSet)
 
-    # Simulation execution
-    """
+
     while True:
         iterations = model.iteration()
         # print(iterations["node_count"])
-        if iterations["node_count"][1] == 0:
+        if iterations["infected"] == 0:
             break
-        nodesActive.append(int(iterations["node_count"][2] + iterations["node_count"][1]))
-    """
-    iterations = model.iteration_bunch(10)
-    print(iterations[-1]["node_count"][2])
-    input()
+        nodesActive.append(int(iterations["infected"] + iterations["removed"]))
+
+        print(iterations)
     # Visualization
     #viz = DiffusionTrend(model, trends)
     #viz.plot("WC diffusion.pdf")
     # input()
     return nodesActive[-1]
 
+if __name__ == "__main__":
+    g = loadArxiv()
+    s = ['9803315', '9512380', '9804398', '9407339', '9606399', '9807344', '9306320', '201071', '9905221', '9507378', '9408384', '101336', '9604387', '9807216', '9903282', '3154', '9603208', '9803445', '9801271', '9410404', '9806471', '9705442', '9303230', '9209205', '9209232', '9304225', '9506380', '5025', '9302210', '9610451', '9812360', '9508343', '9603249', '9308246', '9704207', '9806404', '9704376', '9811291', '9712301', '9803466', '9606211', '9802290', '9806292', '9508347', '9207214', '9709356', '9309289', '9402253', '9609381', '10338']
+    test(g, s)
 
-# g = loadGithub()
-# s = [17522, 18369, 21618, 15051, 28102, 9587, 15191, 30153, 30648]
-# test(g, s)
+# Random: ['9703379', '9803262', '104002', '103198', '9312311', '9602428', '9403270', '9803244', '211295', '9905555', '11136', '206278', '9501367', '9811227', '5023', '9307369', '9811257', '9606422', '9908336', '209320', '9801301', '12239', '9604430', '8012', '7198', '9311322', '9306287', '9908288', '9404202', '9810542', '9904319', '9506251', '207215', '9608281', '9905502', '9605367', '9403292', '205323', '7195', '204282', '209306', '10106', '9808390', '210259', '9408244', '207204', '211250', '9412327', '9701202', '9906488']
 
-# ['17522', '18369', '21618', '15051', '28102', '29587', '15191', '30153', '30648', '28887', '25722', '28154', '35949', '16372', '11948', '8274', '34875', '13115', '12311', '14854', '25137', '4602', '4080', '20521', '25649', '22201', '4816', '25740', '10949', '27649', '32775', '12893', '23711', '18965', '11215', '3026', '33276', '21952', '29906', '25480', '19402', '15423', '5276', '2729', '30660', '19976', '4621', '23820', '21818', '7390', '26403', '32820', '15391', '34722', '11629', '17000', '36906', '10377', '21322', '9921', '6110', '13788', '13438', '4200', '32369', '12721', '18981', '571', '23972', '22887', '9266', '28768', '4881', '35225', '35257', '20640', '22555', '26832', '19844', '28067', '21901', '33594', '29048', '24583', '17056', '13503', '34355', '1508', '12444', '13733', '24679', '10179', '8209', '5580', '1806', '31715', '972', 
-# '12071', '17836', '29125']
+# Degree ['9803315', '9512380', '9804398', '9407339', '9606399', '9807344', '9306320', '201071', '9905221', '9507378', '9408384', '101336', '9604387', '9807216', '9903282', '3154', '9603208', '9803445', '9801271', '9410404', '9806471', '9705442', '9303230', '9209205', '9209232', '9304225', '9506380', '5025', '9302210', '9610451', '9812360', '9508343', '9603249', '9308246', '9704207', '9806404', '9704376', '9811291', '9712301', '9803466', '9606211', '9802290', '9806292', '9508347', '9207214', '9709356', '9309289', '9402253', '9609381', '10338']

@@ -2,88 +2,75 @@ from ndlib.models import DiffusionModel
 import future.utils
 import numpy as np
 import random
+import networkx
 
-class WeightedCascadeModel(DiffusionModel.DiffusionModel):
+class WeightedCascadeModel:
     """
         Edge Parameters to be specified via ModelConfig
         :param threshold: The edge threshold. As default a value of 0.1 is assumed for all edges.
     """
 
-    def __init__(self, graph, seed=None):
+    def __init__(self, directedGraph, seed):
         """
              Model Constructor
              :param graph: A networkx graph object
          """
-        super(self.__class__, self).__init__(graph, seed)
         self.available_statuses = {
-            "Susceptible": 0,
-            "Infected": 1,
-            "Removed": 2
+            0 : "Susceptible",
+            1 : "Infected",
+            2 : "Removed"
         }
 
-        self.parameters = {
-            "model": {},
-            "nodes": {},
-            "edges": {
-                "threshold": {
-                    "descr": "Edge threshold",
-                    "range": [0, 1],
-                    "optional": True,
-                    "default": 0.1
-                }
-            },
-        }
+        self.undirectedGraph = directedGraph.to_undirected()
+        self.graph = directedGraph
+        self.nodes = self.graph.nodes
+        self.nodeStatuses = {}
 
-        self.name = "Independent Cascades"
+        for node in self.nodes:
+            if node in seed:
+                self.nodeStatuses[node] = 1
+            else:
+                self.nodeStatuses[node] = 0
 
-    def iteration(self, node_status=True):
+        self.name = "Weighted Cascades"
+
+        np.random.seed(None)
+
+
+
+    def iteration(self):
         """
         Execute a single model iteration
         :return: Iteration_id, Incremental node status (dictionary node->status)
         """
-        self.clean_initial_status(self.available_statuses.values())
-        actual_status = {node: nstatus for node, nstatus in future.utils.iteritems(self.status)}
 
-        if self.actual_iteration == 0:
-            self.actual_iteration += 1
-            delta, node_count, status_delta = self.status_delta(actual_status)
-            if node_status:
-                return {"iteration": 0, "status": actual_status.copy(),
-                        "node_count": node_count.copy(), "status_delta": status_delta.copy()}
-            else:
-                return {"iteration": 0, "status": {},
-                        "node_count": node_count.copy(), "status_delta": status_delta.copy()}
+        status = self.nodeStatuses.copy()
 
-        for u in self.graph.nodes:
-            if self.status[u] != 1:
+        for u in self.nodes:
+            if self.nodeStatuses[u] != 1:
                 continue
 
             neighbors = list(self.graph.neighbors(u))  # neighbors and successors (in DiGraph) produce the same result
 
             if len(neighbors) > 0:
-                threshold = 1/len(neighbors)
-
+                temp = 1/ self.undirectedGraph.degree[u]
+                threshold = ("%.2f" % temp)
 
                 for v in neighbors:
-                    if actual_status[v] == 0:
+                    if self.nodeStatuses[v] == 0:
                         
-                        # flip = np.random.random_sample()
-                        flip = random.uniform(0.0, 1.0)
-                        # print("flip:", flip)
+                        temp = np.random.random_sample()
+                        flip = ("%.2f" % temp)
+ 
                         if flip <= threshold:
-                            actual_status[v] = 1
-                            # print("flipped")
-                            # input()
+                            status[v] = 1
 
-            actual_status[u] = 2
 
-        delta, node_count, status_delta = self.status_delta(actual_status)
-        self.status = actual_status
-        self.actual_iteration += 1
+            status[u] = 2
+        
+        self.nodeStatuses = status.copy()
 
-        if node_status:
-            return {"iteration": self.actual_iteration - 1, "status": delta.copy(),
-                    "node_count": node_count.copy(), "status_delta": status_delta.copy()}
-        else:
-            return {"iteration": self.actual_iteration - 1, "status": {},
-                    "node_count": node_count.copy(), "status_delta": status_delta.copy()}
+        removedCount = sum(value == 2 for value in self.nodeStatuses.values())
+        infectedCount = sum(value == 1 for value in self.nodeStatuses.values())
+
+        return {"infected" : infectedCount, "removed" : removedCount}

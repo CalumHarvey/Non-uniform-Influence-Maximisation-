@@ -85,26 +85,77 @@ Network: Arxiv
 
 
 
+50-500
+Network: Arxiv
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[173, 361, 507, 670, 799, 940, 1120, 1241, 1378, 1534]
+		Heuristic: Degree
+		[175, 287, 383, 508, 575, 675, 763, 820, 905, 988]
+		Heuristic: SingleDiscount
+		[202, 334, 458, 570, 665, 784, 879, 967, 1092, 1154]
+		Heuristic: DegreeDiscount
+		[207, 364, 497, 633, 748, 867, 983, 1088, 1202, 1313]
+
+10-50
+Network: Arxiv
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[32, 74, 95, 141]
+		Heuristic: Degree
+		[52, 86, 133, 158]
+		Heuristic: SingleDiscount
+		[61, 95, 123, 161]
+		Heuristic: DegreeDiscount
+		[57, 90, 139, 152]
 
 Network: Arxiv
 	Diffusion Model: WeightedCascade
 		Heuristic: Random
-		[114, 249, 379, 469, 560]
+		[206, 365, 536, 738, 966, 1105, 1300, 1470, 1598, 1812]
 		Heuristic: Degree
-		[133, 232, 416, 435, 566]
+		[231, 401, 563, 674, 785, 855, 976, 1018, 1104, 1141]
 		Heuristic: SingleDiscount
-		[142, 203, 304, 434, 488]
+		[248, 446, 641, 774, 886, 1023, 1117, 1218, 1351, 1431]
 		Heuristic: DegreeDiscount
-		[127, 215, 363, 410, 522]
+		[248, 455, 677, 838, 970, 1122, 1259, 1389, 1525, 1646]
 
+
+
+
+
+TESTING:
 
 Network: Arxiv
 	Diffusion Model: WeightedCascade
 		Heuristic: Random
-		[102, 241, 366, 498, 527]
+		[50, 83, 110, 175, 210]
 		Heuristic: Degree
-		[132, 265, 347, 389, 477]
+		[79, 127, 167, 202, 238]
 		Heuristic: SingleDiscount
-		[138, 227, 340, 404, 504]
+		[88, 120, 178, 242, 259]
 		Heuristic: DegreeDiscount
-		[123, 232, 352, 395, 490]
+		[74, 149, 184, 234, 255]
+
+Network: Arxiv
+	Diffusion Model: WeightedCascade
+Network: Arxiv
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[52, 76, 122, 174, 185]
+		Heuristic: Degree
+		[91, 123, 181, 217, 239]
+		Heuristic: SingleDiscount
+		[75, 130, 166, 237, 255]
+		Heuristic: DegreeDiscount
+		[78, 135, 183, 225, 276]
+Network: Arxiv
+	Diffusion Model: WeightedCascade
+		Heuristic: Random
+		[216, 393, 563, 761, 882, 1070, 1191, 1335, 1453, 1576]
+		Heuristic: Degree
+		[253, 358, 449, 555, 630, 740, 838, 919, 1007, 1070]
+		Heuristic: SingleDiscount
+		[260, 385, 527, 632, 755, 877, 958, 1066, 1161, 1262]
+		Heuristic: DegreeDiscount
+		[270, 415, 581, 722, 847, 957, 1092, 1203, 1319, 1392]
