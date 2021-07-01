@@ -28,30 +28,31 @@ def singleRun(networks, heuristic, model, networkName, average):
 
     network = networks()
 
-    """
+
     with open("costs/" + networkName.lower() + "/pagerank.p", "rb") as fp:
             data = pickle.load(fp)
-    """
+
     seedSetSize = 50 # uniform costs
-    budget = 1000 # non-uniform costs
+    budget = 5 # non-uniform costs
     repetitions = 20
     seedSet = []
     # 50-500
     for x in range(50, 550, 50):
-        seedSet = np.array(heuristic(network, x)) # seedset for uniform costs
-        # seedSet = np.array(heuristic(network, x*average, data))
+        # seedSet = np.array(heuristic(network, x)) # seedset for uniform costs
+        seedSet = np.array(heuristic(network, x*average, data))
         if networkName == "Github":
             seedSet = seedSet.astype("int")
         else:
             seedSet = seedSet.astype("str")
+        print("seedset size:", len(seedSet))
         outputs = []
         for y in range(repetitions):
             print(y)
             infectedNodes = model(network, seedSet)
             outputs.append(infectedNodes)
 
-        print(np.mean(np.array(outputs)))
-        infections.append(int(np.mean(np.array(outputs))))
+        print(int(round(np.mean(np.array(outputs)))))
+        infections.append(int(round(np.mean(np.array(outputs)))))
 
     return infections
     
@@ -75,7 +76,7 @@ def plotInfection(infections, network, heuristic, model):
     plt.plot(yAxis, infections, label=heuristic)
     plt.legend()
 
-    directory = "graphs/tests/" + network + "/" + model
+    directory = "graphs/uniform/" + network + "/" + model
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -103,7 +104,7 @@ def plotAllHeuristics(data, fileName, heuristics):
     
     plt.legend()
 
-    directory = "graphs/tests/allHeuristics"
+    directory = "graphs/uniform/allHeuristics"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -117,26 +118,30 @@ def main():
     # Empty array for results 
     results = []
 
-    resultsFile = "results.txt"
+    resultsFile = "results non-uniform.txt"
 
     # Arrays for names of networks, heuristics and models
     # ["Amazon", "Github", "Arxiv"]
-    networkNames = ["Arxiv"]
+    networkNames =  ["Amazon", "Github", "Arxiv"]
     heuristicNames= ["Random", "Degree", "SingleDiscount", "DegreeDiscount"] # ["Random", "Degree", "SingleDiscount", "DegreeDiscount"]
-    diffusionNames = ["WeightedCascade"]     # ["LinearThreshold", "IndependentCascade", "WeightedCascade"] 
+    diffusionNames = ["LinearThreshold", "IndependentCascade", "WeightedCascade"]   # ["LinearThreshold", "IndependentCascade", "WeightedCascade"] 
 
     # Arrays for functions relating to networks, heuristics and models
     # [loadAmazon, loadGithub, loadArxiv]
-    networks = np.array([loadArxiv])
+    networks = np.array([loadAmazon, loadGithub, loadArxiv])
 
+    # PageRank Averages
     averages = [0.0000033, 0.000013, 0.000022]
 
+    # Degree Averages
+    # averages = [6, 5, 5]
+
     # uniform cost heuristics 
-    heuristics = [randomSeedsetUniform, degreeSeedsetUniform, singleDegreeDiscountUniform, degreeDiscountUniform] #  [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
+    # heuristics = [randomSeedsetUniform, degreeSeedsetUniform, singleDegreeDiscountUniform, degreeDiscountUniform] #  [randomSeedset, degreeSeedset, singleDegreeDiscount, degreeDiscount]
     
     # Non uniform cost heuristics
-    # heuristics = [randomSeedsetNonUniform, degreeSeedsetNonUniform, singleDegreeDiscountNonUniform, degreeDiscountNonUniform]
-    diffusionModels = [weightedCascade] # [linearThreshold, independentCascade, weightedCascade] 
+    heuristics = [randomSeedsetNonUniform, degreeSeedsetNonUniform, singleDegreeDiscountNonUniform, degreeDiscountNonUniform] # [randomSeedsetNonUniform, degreeSeedsetNonUniform, singleDegreeDiscountNonUniform, degreeDiscountNonUniform]
+    diffusionModels = [linearThreshold, independentCascade, weightedCascade]   # [linearThreshold, independentCascade, weightedCascade] 
 
     #For each network...
     for x in range(len(networks)):

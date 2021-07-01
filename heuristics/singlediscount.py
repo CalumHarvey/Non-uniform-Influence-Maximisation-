@@ -86,7 +86,6 @@ def singleDegreeDiscountNonUniform(G, n, costs):
             nodeCost = costs[k]
 
             if overallCost+nodeCost <= n:
-                print(nodeCost)
 
                 overallCost += nodeCost
 
@@ -108,14 +107,14 @@ def singleDegreeDiscountNonUniform(G, n, costs):
 if __name__ == '__main__':
     import pickle
 
-    with open("costs/" + "github" + "/pagerank.p", "rb") as fp:
+    with open("costs/" + "amazon" + "/random.p", "rb") as fp:
         data = pickle.load(fp)
     
-    with open(r"pickles/github.pickle", "rb") as input_file:
+    with open(r"pickles/amazon.pickle", "rb") as input_file:
         githubGraph = pickle.load(input_file)
     
     undirected = githubGraph.to_undirected()
 
-    S = singleDegreeDiscountNonUniform(undirected, 0.004, data)
+    S = singleDegreeDiscountNonUniform(undirected, 250, data)
 
     print(S)

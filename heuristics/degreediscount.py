@@ -76,12 +76,12 @@ def degreeDiscountNonUniform(G, n, costs, p=0.01):
 
             if(k in seedSet):
                 continue
+            
+            print(overallCost)
 
             nodeCost = costs[k]
 
             if overallCost+nodeCost <= n:
-
-                print(nodeCost)
 
                 overallCost += nodeCost
 
@@ -93,23 +93,26 @@ def degreeDiscountNonUniform(G, n, costs, p=0.01):
                         dd[neighbour] = d[neighbour] - 2*t[neighbour] - (d[neighbour]-t[neighbour])*t[neighbour]*p
                 break
 
+        #return seedSet
+        
+
         if overallCost == n or oldSeedSet == seedSet:
             return seedSet
-            
-        return seedSet
+        
+
 
 if __name__ == '__main__':
     import pickle
 
-    with open("costs/" + "github" + "/degree.p", "rb") as fp:
+    with open("costs/" + "amazon" + "/random.p", "rb") as fp:
         data = pickle.load(fp)
     
-    with open(r"pickles/github.pickle", "rb") as input_file:
+    with open(r"pickles/amazon.pickle", "rb") as input_file:
         githubGraph = pickle.load(input_file)
     
     undirected = githubGraph.to_undirected()
 
-    S = degreeDiscountNonUniform(undirected, 3000, data)
+    S = degreeDiscountNonUniform(undirected, 250, data)
 
     print(S)
 

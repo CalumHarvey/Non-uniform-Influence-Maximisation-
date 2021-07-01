@@ -88,7 +88,7 @@ def readArxivData():
     Save network as pickle file
 
     """
-    with open("networks/hep.txt") as f:
+    with open("networks/phy.txt") as f:
         ArxivGraph = nx.read_edgelist(f)
     undirected = ArxivGraph.to_undirected()
     

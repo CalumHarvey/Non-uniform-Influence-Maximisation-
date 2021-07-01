@@ -15,7 +15,7 @@ def random(graph):
     labels = {}
 
     for node in graph.nodes:
-        labels[node] = randint(0,10)
+        labels[node] = randint(1,9)
 
     return labels
 
@@ -101,5 +101,5 @@ def averageCalculations():
 
 if __name__ == "__main__":
 
-    # writeCosts(loadArxiv(), "arxiv")
+    # writeAllCosts()
     averageCalculations()

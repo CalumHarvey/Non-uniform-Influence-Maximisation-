@@ -49,10 +49,11 @@ def degreeSeedsetNonUniform(G, n, costs):
         nodeCost = costs[node[0]]
 
         if overallCost+nodeCost <= n:
-            print(nodeCost)
             overallCost += nodeCost
             seedSet.append(node[0])
         
+        if overallCost == n:
+            break
 
     return seedSet
 
@@ -61,14 +62,14 @@ def degreeSeedsetNonUniform(G, n, costs):
 if __name__ == '__main__':
     import pickle
 
-    with open("costs/" + "github" + "/degree.p", "rb") as fp:
+    with open("costs/" + "amazon" + "/random.p", "rb") as fp:
         data = pickle.load(fp)
     
-    with open(r"pickles/arxiv.pickle", "rb") as input_file:
+    with open(r"pickles/amazon.pickle", "rb") as input_file:
         arxivGraph = pickle.load(input_file)
     
     undirected = arxivGraph.to_undirected()
 
-    S = degreeSeedsetUniform(undirected, 50)
+    S = degreeSeedsetNonUniform(undirected, 250, data)
 
     print(S)

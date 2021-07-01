@@ -54,13 +54,13 @@ class WeightedCascadeModel:
 
             if len(neighbors) > 0:
                 temp = 1/ self.undirectedGraph.degree[u]
-                threshold = ("%.2f" % temp)
+                threshold = float("%.2f" % temp)
 
                 for v in neighbors:
                     if self.nodeStatuses[v] == 0:
                         
                         temp = np.random.random_sample()
-                        flip = ("%.2f" % temp)
+                        flip = float("%.2f" % temp)
  
                         if flip <= threshold:
                             status[v] = 1
