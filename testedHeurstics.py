@@ -84,7 +84,7 @@ def degreeCostPercentage2(G, b, C, p=0.01):
                 for neighbour in G.neighbors(k):
                     if neighbour not in S:
                         t[neighbour] += 1
-                        dd[neighbour] = d[neighbour] / C[neighbour]
+                        dd[neighbour] = 1+(d[neighbour]-t[neighbour])*p / C[neighbour]
                 break
         # return seedSet
 

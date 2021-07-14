@@ -120,29 +120,42 @@ def degreeCostPercentage(G, b, C):
 
     S = []
     costs = []
+    temp = []
     TC = 0
     d = dict()
 
     for node in G.nodes:
-        d[node] = G.degree[node]
+        d[node] = C[node] / G.degree[node]
 
-    d = dict(sorted(d.items(), key=lambda item: item[1], reverse=True))
+    d = dict(sorted(d.items(), key=lambda item: item[1], reverse=False))
 
     for k,v in d.items():
 
         budgetLeft = b - TC
+        nodeCost = C[k]
 
-        if TC+v <= b and v <= budgetLeft * 0.015:
+        # if TC+v <= b and v <= budgetLeft * 0.015:
+        if TC+nodeCost <= b:
 
             S.append(k)
             costs.append(v)
+            temp.append(G.degree[k])
+
+            # print(k)
+            # print(v)
+            # print(C[k], "/", G.degree[k])
+            # print(budgetLeft)
+            # input()
+
+
         
-            TC += v
+            TC += nodeCost
         
         if TC == b:
             break
     
     # print(costs)
+    # print(temp)
     return S
 
 
@@ -160,15 +173,18 @@ def degreeCostPercentage2(G, b, C, p=0.01):
     for node in G.nodes:
         t[node] = 0
         d[node] = G.degree[node]
-        dd[node] = (1+(d[node] - t[node])*p) / C[node]
+        dd[node] =  C[node] / d[node]
 
     while True:
 
         oldSeedSet = S.copy()
 
-        dd = dict(sorted(dd.items(), key=lambda item: item[1], reverse=True))
+        dd = dict(sorted(dd.items(), key=lambda item: (item[1] is None, item[1]), reverse=False))
 
         for k, v in dd.items():
+
+            # print(k, v)
+            # input()
 
             if k in S:
                 continue
@@ -185,67 +201,95 @@ def degreeCostPercentage2(G, b, C, p=0.01):
                 costs.append(C[k])
                 degrees.append(G.degree[k])
 
+                # print(k)
+                # print(v)
+                # print(C[k], "/", G.degree[k])
+                # print(budgetLeft)
+                # input()
+
                 for neighbour in G.neighbors(k):
-                    if neighbour not in S:
+                    if neighbour not in S and dd[neighbour] is not None:
                         t[neighbour] += 1
-                        dd[neighbour] = (1+(d[neighbour] - t[neighbour])*p) / C[neighbour]
+                        # print(d[neighbour])
+                        # print(t[neighbour])
+                        # input()
+                        if d[neighbour] - t[neighbour] == 0:
+                            dd[neighbour] = 0
+                        else:
+                            dd[neighbour] = C[neighbour] / (d[neighbour] - t[neighbour])
                 break
         # return seedSet
 
         if TC == b or oldSeedSet == S:
-            print(costs)
-            print(degrees)
+            # print(costs)
+            # print(degrees)
             return S
 
 
 
 def degreeCostPercentage3(G, b, C, p=0.01):
 
-    TC = 0
-    seedSet = []
+    S = []
+    augmentCost = []
     costs = []
-    dd = dict()  # degree dict
-    t = dict()  # adjacent vertices in seedSet
-    d = dict()  # degree of each vertice
-    nd = dict()
+    degrees = []
+    TC = 0
+    d = dict()
+    dd = dict()
+    t = dict()
 
     for node in G.nodes:
-        d[node] = int(G.degree[node])
-        dd[node] = int(G.degree[node])
         t[node] = 0
+        d[node] = G.degree[node]
+        dd[node] = (1+(d[node]*p)) / C[node]
 
     while True:
 
-        oldSeedSet = seedSet.copy()
+        oldSeedSet = S.copy()
 
-        nd = dict(sorted(dd.items(), key=lambda item: item[1], reverse=True))
+        dd = dict(sorted(dd.items(), key=lambda item: item[1], reverse=True))
 
-        for k, v in nd.items():
+        for k, v in dd.items():
 
-            if k in seedSet:
+            # if d[k] != 1:
+            #     print(k,v)
+            #     print(d[k])
+            #     print(t[k])
+            #     print(C[k])
+            #     print(dd[k])
+            #     input()
+
+            if k in S:
                 continue
 
             nodeCost = C[k]
             budgetLeft = b - TC
 
-            if TC+nodeCost <= b and nodeCost <= budgetLeft * 0.015:
+            if TC+nodeCost <= b:
+
+                # print("added to seedset")
 
                 TC += nodeCost
 
-                seedSet.append(k)
+                S.append(k)
+                # print(S)
 
-                costs.append(v)
+                costs.append(C[k])
+                augmentCost.append(v)
+                degrees.append(G.degree[k])
 
                 for neighbour in G.neighbors(k):
-                    if neighbour not in seedSet:
+                    if neighbour not in S:
                         t[neighbour] += 1
-                        dd[neighbour] = (d[neighbour] - 2*t[neighbour] - (d[neighbour]-t[neighbour])*t[neighbour]*p) / C[neighbour]
+                        dd[neighbour] = (1+((d[neighbour]-t[neighbour])*p)) / C[neighbour]
                 break
         # return seedSet
 
-        if TC == b or oldSeedSet == seedSet:
+        if TC == b or oldSeedSet == S:
             # print(costs)
-            return seedSet
+            # print(augmentCost)
+            # print(degrees)
+            return S
 
 
 
@@ -260,7 +304,7 @@ def main(data, undirected, average):
 
         for x in range(50, 550,50):
 
-            S = degreeCostPercentage3(undirected, x*average, data)
+            S = degreeCostPercentage3(undirected, x*average, data) 
 
             outputs = []
 
@@ -285,34 +329,38 @@ if __name__ == '__main__':
 
     averages = [5, 4, 0.000027]
 
-    with open("costs/" + "arxiv" + "/pagerank.p", "rb") as fp:
+    with open("costs/" + "github" + "/pagerank.p", "rb") as fp: #change "amazon" to "github"
         data3 = pickle.load(fp)
 
-    with open("costs/" + "arxiv" + "/degree.p", "rb") as fp:
+    with open("costs/" + "github" + "/degree.p", "rb") as fp: #change "amazon" to "github"
         data2 = pickle.load(fp)
     
-    with open("costs/" + "arxiv" + "/random.p", "rb") as fp:
+    with open("costs/" + "github" + "/random.p", "rb") as fp: #change "amazon" to "github"
         data = pickle.load(fp)
     
-    with open(r"pickles/arxiv.pickle", "rb") as input_file:
+    with open(r"pickles/github.pickle", "rb") as input_file: #change "amazon" to "github"
         githubGraph = pickle.load(input_file)
     
     undirected = githubGraph.to_undirected()
 
-    # S = degreeCostPercentage2(undirected, 0.000027*100, data3)
+    # S = degreeCostPercentage3(undirected, 500*0.000027, data3)
 
-    # infectedNodes = weightedCascade(undirected, S)
-    # print(infectedNodes)
-    # S = averageCost(undirected, 250, data)
+    # lt = linearThreshold(undirected, S)
+    # ic = independentCascade(undirected, S)
+    # wc = weightedCascade(undirected, S)
+    # # print("x:", x)
+    # print("seedSet size:", len(S))
+    # print("\tResults: ", lt, " ", ic, " ", wc)
 
     # print(S)
     # print(len(S))
     print("Random")
     main(data, undirected, 5) 
     print("Degree")
-    main(data2, undirected, 4) 
+    main(data2, undirected, 6) 
     print("Page Rank")
-    main(data3, undirected, 0.000027) 
+    #main(data3, undirected, 0.0000033)
+    main(data3, undirected, 0.000013)
 
 
 
