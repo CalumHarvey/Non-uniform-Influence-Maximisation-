@@ -59,11 +59,14 @@ def readAmazonData():
     Save network as pickle file
 
     """
-
+    # Open file...
     with open("networks/Amazon0302.txt") as f:
+        # Returns a networkX Object
         amazonGraph = nx.read_edgelist(f)
+    # Change to Undirected Graph
     undirected = amazonGraph.to_undirected()
     
+    # Create pickle file of NetworkX Object
     pickle.dump(undirected, open( "pickles/amazon.pickle", "wb" ))
 
 

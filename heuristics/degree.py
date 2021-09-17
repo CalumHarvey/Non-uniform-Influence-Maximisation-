@@ -61,15 +61,21 @@ def degreeSeedsetNonUniform(G, n, costs):
 
 if __name__ == '__main__':
     import pickle
+    from collections import Counter
+    from DiffusionModels import loadAmazon, loadGithub, loadArxiv, linearThreshold, weightedCascade, independentCascade
 
-    with open("costs/" + "amazon" + "/random.p", "rb") as fp:
+    with open("costs/" + "github" + "/random.p", "rb") as fp:
         data = pickle.load(fp)
     
-    with open(r"pickles/amazon.pickle", "rb") as input_file:
+    with open(r"pickles/github.pickle", "rb") as input_file:
         arxivGraph = pickle.load(input_file)
-    
+
     undirected = arxivGraph.to_undirected()
 
-    S = degreeSeedsetNonUniform(undirected, 250, data)
+    S = degreeSeedsetNonUniform(undirected, 5*200, data)
+
+    lt = linearThreshold(undirected, S)
 
     print(S)
+    print(len(S))
+    print(lt)

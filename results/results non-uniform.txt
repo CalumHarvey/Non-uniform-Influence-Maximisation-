@@ -107,7 +107,6 @@ Network: Amazon
 		[7, 12, 16, 24, 32, 37, 44, 49, 59, 64]
 		Heuristic: DegreeDiscount
 		[7, 12, 20, 26, 29, 38, 45, 55, 57, 65]
-Network: Amazon
 	Diffusion Model: WeightedCascade
 		Heuristic: Random
 		[268, 493, 918, 969, 1245, 1546, 1794, 2062, 2366, 2606]

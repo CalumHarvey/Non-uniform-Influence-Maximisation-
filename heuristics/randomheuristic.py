@@ -50,7 +50,7 @@ def randomSeedsetNonUniform(G, n, costs):
 if __name__ == '__main__':
     import pickle
 
-    with open("costs/" + "arxiv" + "/random.p", "rb") as fp:
+    with open("costs/" + "arxiv" + "/pagerank.p", "rb") as fp:
         data = pickle.load(fp)
     
     with open(r"pickles/arxiv.pickle", "rb") as input_file:
@@ -58,6 +58,7 @@ if __name__ == '__main__':
     
     undirected = arxivGraph.to_undirected()
 
-    S = randomSeedsetUniform(undirected, 50)
+    S = randomSeedsetNonUniform(undirected, 0.000027*100, data)
 
     print(S)
+    print(len(S))

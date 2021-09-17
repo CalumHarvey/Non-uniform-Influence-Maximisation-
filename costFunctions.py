@@ -10,7 +10,7 @@ def random(graph):
     Input: 
     graph: networkX graph object
 
-    Costs each node with random integer between 0 and 10
+    Costs each node with random integer between 1 and 9
     """
     labels = {}
 
@@ -91,7 +91,6 @@ def averageCalculations():
         costs.append(np.array(dataArray))
     
     overallArray = np.concatenate(costs)
-    #print(np.concatenate(costs))
     
     print("overall mean: ", '{:.10f}'.format(np.median(overallArray)))
     

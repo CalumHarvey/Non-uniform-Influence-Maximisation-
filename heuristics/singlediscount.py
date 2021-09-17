@@ -107,14 +107,15 @@ def singleDegreeDiscountNonUniform(G, n, costs):
 if __name__ == '__main__':
     import pickle
 
-    with open("costs/" + "amazon" + "/random.p", "rb") as fp:
+    with open("costs/" + "arxiv" + "/pagerank.p", "rb") as fp:
         data = pickle.load(fp)
     
-    with open(r"pickles/amazon.pickle", "rb") as input_file:
+    with open(r"pickles/arxiv.pickle", "rb") as input_file:
         githubGraph = pickle.load(input_file)
     
     undirected = githubGraph.to_undirected()
 
-    S = singleDegreeDiscountNonUniform(undirected, 250, data)
+    S = singleDegreeDiscountNonUniform(undirected, 0.000027*100, data)
 
     print(S)
+    print(len(S))

@@ -21,20 +21,22 @@ class IndependentCascadesModel:
             2 : "Removed"
         }
 
+        # Initialise graph, nodes and node statuses
         self.graph = G
         self.nodes = self.graph.nodes
         self.nodeStatuses = {}
 
+        # Set initial statuses, setting seed nodes to infected
         for node in self.nodes:
             if node in seed:
                 self.nodeStatuses[node] = 1
             else:
                 self.nodeStatuses[node] = 0
 
-        self.name = "Weighted Cascades"
-
+        # Set probability of propagation
         self.threshold = p
 
+        # Initialise randomness seed
         np.random.seed(None)
 
 
@@ -42,35 +44,43 @@ class IndependentCascadesModel:
     def iteration(self):
         """
         Execute a single model iteration
-        :return: Iteration_id, Incremental node status (dictionary node->status)
+        :return: Iteration_id, Incremental node status (dictionary: node->status)
         """
-
+        # Create copy of node statuses
         status = self.nodeStatuses.copy()
 
+        # For each node...
         for u in self.nodes:
+            
+            # If inactive, do nothing
             if self.nodeStatuses[u] != 1:
                 continue
 
-            neighbors = list(self.graph.neighbors(u))  # neighbors and successors (in DiGraph) produce the same result
+            # Get neighbours of node u
+            neighbors = list(self.graph.neighbors(u))  
 
             if len(neighbors) > 0:
 
                 threshold = self.threshold
 
+                # For each neighbour...
                 for v in neighbors:
+                    # If inactive...
                     if self.nodeStatuses[v] == 0:
                         
+                        # Activate with probability p
                         temp = np.random.random_sample()
                         flip = float("%.2f" % temp)
  
                         if flip <= threshold:
                             status[v] = 1
 
-
+            # Set node status to removed after all attempts to infect
             status[u] = 2
         
         self.nodeStatuses = status.copy()
 
+        # Update counts
         removedCount = sum(value == 2 for value in self.nodeStatuses.values())
         infectedCount = sum(value == 1 for value in self.nodeStatuses.values())
 
