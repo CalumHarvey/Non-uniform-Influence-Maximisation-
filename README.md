@@ -4,7 +4,7 @@ Research code for studying influence maximisation in social networks under non u
 
 ## Dissertation
 
-This repository is the codebase for Calum Harvey's CS913 master's dissertation, "Budgeted Influence Maximisation in Social Networks," completed in the Department of Computer Science at the University of Warwick (September 2021), supervised by Dr James Archbold.
+This repository is the codebase for my master's dissertation, "Budgeted Influence Maximisation in Social Networks," completed in the Department of Computer Science at the University of Warwick.
 
 The full write up is included in this repository at [`docs/Budgeted Influence Maximisation in Social Networks - Dissertation.pdf`](docs/Budgeted%20Influence%20Maximisation%20in%20Social%20Networks%20-%20Dissertation.pdf).
 
@@ -51,4 +51,18 @@ Running `cd src && python main.py` will fail, since the data folders (`networks/
 
 ## Data folders
 
-`
+`networks/` holds the raw downloaded network files (edge lists and feature files) from SNAP and similar sources.
+
+`pickles/` holds NetworkX graph objects built from the raw files by `src/networks.py`, so the rest of the pipeline does not need to reparse text files every run.
+
+`costs/` holds precomputed per node cost dictionaries (random, degree, pagerank based) used for the non uniform cost experiments, organised per dataset.
+
+`graphs/` and `results/` hold output artefacts from experiment runs (plots and text logs), kept separate from source code.
+
+## Known quirks
+
+The `src/__init__.py` file imports heuristic names (`degreeDiscount`, `singleDegreeDiscount`, etc.) that no longer match the names actually exported from `src/heuristics/__init__.py` (`degreeDiscountUniform`, `degreeDiscountNonUniform`, etc.). This file appears unused by the rest of the pipeline.
+
+`src/main.py` writes its results log to a relative path such as `results non-uniform.txt` at the repository root, while the `results/` folder already contains a similarly named file from a previous run. Running `main.py` again will create a new file at the root rather than updating the one inside `results/`.
+
+`src/experimental/newHeuristics.py` and `src/experimental/testedHeurstics.py` are not imported anywhere else in the codebase. They appear to be scratch work from heuristic development and were grouped under `experimental/` for clarity.
